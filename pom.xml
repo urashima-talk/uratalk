@@ -147,8 +147,8 @@
         </dependency>
         <dependency>
             <groupId>net.debasishg</groupId>
-            <artifactId>sjson_2.8.0</artifactId>
-            <version>0.8</version>
+            <artifactId>sjson_2.9.0</artifactId>
+            <version>0.12</version>
         </dependency>
     </dependencies>
     <build>
