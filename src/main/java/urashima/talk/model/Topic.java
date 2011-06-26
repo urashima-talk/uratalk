@@ -39,6 +39,9 @@ public class Topic implements Serializable {
     
     @Attribute(name="cA")
     private Date createdAt;
+    
+    @Attribute(name="nS")
+    private String numberString;
 
     /**
      * Returns the key.
@@ -162,5 +165,13 @@ public class Topic implements Serializable {
 
 	public Date getCreatedAt() {
 		return createdAt;
+	}
+
+	public void setNumberString(String numberString) {
+		this.numberString = numberString;
+	}
+
+	public String getNumberString() {
+		return numberString;
 	}
 }

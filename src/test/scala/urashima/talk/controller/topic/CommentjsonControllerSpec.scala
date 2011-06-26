@@ -5,15 +5,15 @@ import org.specs.runner._
 import org.slim3.tester.ControllerTester
 import org.dotme.liquidtpl.Constants
 
-object JsonControllerSpec extends org.specs.Specification {
+object CommentjsonControllerSpec extends org.specs.Specification {
 
-  val tester = new ControllerTester(classOf[JsonController])
+  val tester = new ControllerTester(classOf[CommentjsonController])
   Constants._pathPrefix = "war/"
-  "JsonController" should {
-    doBefore { tester.setUp; tester.start("/topic/json") }
+  "CommentjsonController" should {
+    doBefore { tester.setUp; tester.start("/topic/commentjson") }
 
     "not null" >> {
-      val controller = tester.getController[JsonController]
+      val controller = tester.getController[CommentjsonController]
       controller mustNotBe null
     }
     "not redirect" >> {
@@ -30,4 +30,4 @@ object JsonControllerSpec extends org.specs.Specification {
     }
   }
 }
-class JsonControllerSpecTest extends JUnit4(JsonControllerSpec)
+class CommentjsonControllerSpecTest extends JUnit4(CommentjsonControllerSpec)

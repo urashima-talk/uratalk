@@ -20,6 +20,7 @@ import urashima.talk.model.Topic
 import sjson.json.JsonSerialization
 import urashima.talk.model.Comment
 import urashima.talk.meta.TopicMeta
+import org.dotme.liquidtpl.lib.memcache.CounterLogService
 import org.dotme.liquidtpl.lib.memcache.ReverseCounterLogService
 import urashima.talk.meta.CommentMeta
 import urashima.talk.lib.util.AppConstants
@@ -36,11 +37,12 @@ object TopicService {
       def writes(topic: Topic): JsValue = {
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (topic.getKey != null) KeyFactory.keyToString(topic.getKey) else null)),
-          (JsString("name"), tojson(topic.getName)),
+          (JsString("name"), tojson(if(topic.getName.isEmpty) LanguageUtil.get("topic.defaultName") else topic.getName)),
           (JsString("title"), tojson(topic.getTitle)),
           (JsString("content"), tojson(topic.getContent)),
           (JsString("isNoticed"), tojson(topic.isNoticed.toString)),
           (JsString("isHidden"), tojson(topic.isHidden.toString)),
+          (JsString("number"), tojson(topic.getNumberString)),
           (JsString("createdAt"), if (topic.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(topic.getCreatedAt)) else tojson(""))))
       }
     }
@@ -60,12 +62,13 @@ object TopicService {
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (comment.getKey != null) KeyFactory.keyToString(comment.getKey) else null)),
           (JsString(AppConstants.KEY_TOPIC_ID), tojson(if (comment.getTopicRef != null) KeyFactory.keyToString(comment.getTopicRef.getKey) else null)),
-          (JsString("name"), tojson(topic.getName)),
-          (JsString("title"), tojson(topic.getTitle)),
-          (JsString("content"), tojson(topic.getContent)),
-          (JsString("isNoticed"), tojson(topic.isNoticed.toString)),
-          (JsString("isHidden"), tojson(topic.isHidden.toString)),
-          (JsString("createdAt"), if (topic.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(topic.getCreatedAt)) else tojson(""))))
+          (JsString("name"), tojson(if(comment.getName.isEmpty) LanguageUtil.get("topic.defaultName") else comment.getName)),
+          (JsString("title"), tojson(comment.getTitle)),
+          (JsString("content"), tojson(comment.getContent)),
+          (JsString("isNoticed"), tojson(comment.isNoticed.toString)),
+          (JsString("isHidden"), tojson(comment.isHidden.toString)),
+          (JsString("number"), tojson(comment.getNumberString)),
+          (JsString("createdAt"), if (comment.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(comment.getCreatedAt)) else tojson(""))))
       }
     }
   }
@@ -101,6 +104,7 @@ object TopicService {
     result.setReferenceKey("")
     result.setHidden(false)
     result.setNoticed(false)
+    result.setNumberString("")
     result
   }
 
@@ -108,6 +112,7 @@ object TopicService {
     val key: Key = model.getKey
     if (key == null) {
       model.setKey(Datastore.createKey(classOf[Topic], ReverseCounterLogService.increment("t")))
+      model.setNumberString(CounterLogService.increment("t_all").toString)
     }
 
     val now: Date = new Date
@@ -136,7 +141,7 @@ object TopicService {
     try {
       fetchOne(topicId) match {
         case Some(topic) => {
-          Datastore.query(m).asList.toList
+          Datastore.query(m).filter(m.topicRef.equal(topic.getKey)).asList.toList
         }
         case None => null
       }
@@ -182,7 +187,7 @@ object TopicService {
     Datastore.delete(comment.getKey)
   }
 
-  def createNewComment(): Comment = {
+  def createNewComment(topic:Topic): Comment = {
     val result: Comment = new Comment
     result.setName("")
     result.setTitle("")
@@ -190,6 +195,8 @@ object TopicService {
     result.setReferenceKey("")
     result.setHidden(false)
     result.setNoticed(false)
+    result.setNumberString("")
+    result.getTopicRef.setModel(topic)
     result
   }
 
@@ -198,6 +205,7 @@ object TopicService {
     val now: Date = new Date
     if (key == null) {
       model.setKey(Datastore.createKey(classOf[Comment], ReverseCounterLogService.increment("c")))
+      model.setNumberString(CounterLogService.increment("c_%s".format(topic.getNumberString)).toString)
     }
 
     if (model.getCreatedAt == null) {
@@ -206,5 +214,7 @@ object TopicService {
     model.getTopicRef.setModel(topic)
     Datastore.put(model).apply(0)
   }
+  
+  
 
 }

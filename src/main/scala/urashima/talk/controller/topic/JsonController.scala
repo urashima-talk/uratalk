@@ -31,7 +31,7 @@ class JsonController extends AbstractJsonDataController {
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
           LanguageUtil.get("error.dataNotFound"))
-        null
+        tojson("")
       }
     }
   }
@@ -47,7 +47,7 @@ class JsonController extends AbstractJsonDataController {
         case None => {
           addError(Constants.KEY_GLOBAL_ERROR,
             LanguageUtil.get("error.dataNotFound"))
-          null
+          tojson("")
         }
       }
     } else {

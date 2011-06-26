@@ -6,11 +6,12 @@ import org.dotme.liquidtpl.LanguageUtil
 import urashima.talk.service.TopicService
 import org.dotme.liquidtpl.Constants
 import urashima.talk.model.Topic
+import urashima.talk.lib.util.TextUtils
 
 class FormController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
-  override def redirectUri: String = "/topic/index";
+  override def redirectUri: String = "/index";
 
   override def getTemplateName: String = {
     "form"
@@ -27,7 +28,7 @@ class FormController extends AbstractFormController {
     //Title
     val title = request.getParameter("title")
     if (title.size <= 0 || title.size > AppConstants.VALIDATE_STRING_LENGTH) {
-      addError("name", LanguageUtil.get("error.stringLength", Some(Array(
+      addError("title", LanguageUtil.get("error.stringLength", Some(Array(
         LanguageUtil.get("topic.title"), "1", AppConstants.VALIDATE_STRING_LENGTH.toString))));
     }
 
@@ -61,6 +62,8 @@ class FormController extends AbstractFormController {
         topic.setTitle(request.getParameter("title"))
         //Content
         topic.setContent(request.getParameter("content"))
+        
+        topic.setReferenceKey(TextUtils.encode(request.getRemoteAddr))
 
         TopicService.save(topic)
       }

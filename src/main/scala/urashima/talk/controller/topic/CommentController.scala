@@ -8,16 +8,17 @@ import urashima.talk.service.TopicService
 import org.dotme.liquidtpl.Constants
 import urashima.talk.model.Topic
 import urashima.talk.model.Comment
+import urashima.talk.lib.util.TextUtils
 
 class CommentController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
   override def redirectUri: String = {
-    "/topic/view?%s=%s".format(AppConstants.KEY_TOPIC_ID, request.getParameter(AppConstants.KEY_TOPIC_ID));
+    "/topic/comment?%s=%s".format(AppConstants.KEY_TOPIC_ID, request.getParameter(AppConstants.KEY_TOPIC_ID));
   }
 
   override def getTemplateName: String = {
-    "commentform"
+    "comment"
   }
 
   override def validate: Boolean = {
@@ -30,9 +31,12 @@ class CommentController extends AbstractFormController {
 
     //Content
     val content = request.getParameter("content")
-    if (content.size > AppConstants.VALIDATE_LONGTEXT_LENGTH) {
+    if (content.size == 0) {
+      addError("content", LanguageUtil.get("error.required", Some(Array(
+        LanguageUtil.get("topic.content")))))
+    } else if (content.size > AppConstants.VALIDATE_LONGTEXT_LENGTH) {
       addError("content", LanguageUtil.get("error.stringLength", Some(Array(
-        LanguageUtil.get("topic.content"), "1", AppConstants.VALIDATE_LONGTEXT_LENGTH.toString))));
+        LanguageUtil.get("topic.comment"), "1", AppConstants.VALIDATE_LONGTEXT_LENGTH.toString))));
     }
 
     !existsError
@@ -44,24 +48,26 @@ class CommentController extends AbstractFormController {
       val id = request.getParameter(Constants.KEY_ID)
       TopicService.fetchOne(topicId) match {
         case Some(topic) => {
-            val comment: Comment = if (id == null) {
-              TopicService.createNewComment
-            } else {
-              TopicService.fetchComment(id, Some(topic)) match {
-                case Some(v) => v
-                case None => null
-              }
+          val comment: Comment = if (id == null) {
+            TopicService.createNewComment(topic)
+          } else {
+            TopicService.fetchComment(id, Some(topic)) match {
+              case Some(v) => v
+              case None => null
             }
+          }
 
-            if (comment != null) {
-              //Name
-              comment.setName(request.getParameter("name"))
+          if (comment != null) {
+            //Name
+            comment.setName(request.getParameter("name"))
 
-              //Content
-              comment.setContent(request.getParameter("content"))
+            //Content
+            comment.setContent(request.getParameter("content"))
+            
+            comment.setReferenceKey(TextUtils.encode(request.getRemoteAddr))
 
-              TopicService.saveComment(comment, topic)
-            }
+            TopicService.saveComment(comment, topic)
+          }
         }
         case None => null
       }

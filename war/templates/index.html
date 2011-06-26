@@ -1,0 +1,22 @@
+<script type="text/javascript">
+    //<![CDATA[
+    $(function(){
+    	$.template( "topicItem", '<li><a data-ajax="false" href="/topic/comment?topicId=${id}">${title} <span class="alignright">${createdAt} (${name} さん) <\/span><\/a><\/li>' );
+    	$("#body").live('pageshow', function(){
+    		if($("#topicList > li").size() == 0){
+                $.initList( "topicList", "topicItem", true, "/topic/json", null, function(jsonData){
+                    var values = jsonData.values;
+                    var size = values.length;
+                    $.setListValues("topicList", "topicItem", true, jsonData);
+                    if(size > 0){
+                        $("#topicList").listview();
+                    }
+                });    		
+    		}
+    	});
+    });
+    //]]>
+</script>
+<h5>新着スレッド一覧</h5>
+<ul id="topicList" class="listTable" style="display: none;" data-theme="a">
+</ul>&nbsp;

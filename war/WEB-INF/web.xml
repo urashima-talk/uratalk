@@ -104,13 +104,6 @@
     
     <security-constraint>
         <web-resource-collection>
-            <url-pattern>*.jsp</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
             <url-pattern>/slim3/gtx</url-pattern>
         </web-resource-collection>
         <auth-constraint>

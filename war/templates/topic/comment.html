@@ -1,0 +1,72 @@
+<div class="box_grayLinewhite mt5">
+	<script type="text/javascript">
+    //<![CDATA[
+    $(function(){
+        $("#body").live('pageshow', function(){
+            $.urlParams = $.getUrlParams();
+            $.topicId = $.urlParams['topicId'];
+            $.commentForm = {};
+            $.initForm("commentForm", "/topic/commentjson", {"topicId": $.topicId});
+            
+            $("#topicDetail").empty();
+            $.initDetail( "topicDetail", "topicItem", "/topic/json", {"id": $.topicId}, function(jsonData){
+                var values = jsonData.values;
+                var size = values.length;
+                values['content'] = $.simpleHTML(values['content']);
+                $.setDetailValues("topicDetail", "topicItem", jsonData);
+            });  
+            
+            if($("#commentList > li").size() == 0){
+                $.initList( "commentList", "commentItem", false, "/topic/commentjson", {"topicId": $.topicId}, function(jsonData){
+                    var values = jsonData.values;
+                    var size = values.length;
+                    for(var i = 0; i < size; i++){
+                        values[i]['content'] = $.simpleHTML(values[i]['content']);
+                    }
+                    $.setListValues("commentList", "commentItem", false, jsonData);
+                    if(size > 0){
+                        $("#commentList").listview();
+                    }
+                });         
+            }
+        });
+    });
+    //]]>		
+	</script>
+
+	<div class="ui-body ui-body-a">
+		<div id="topicDetail"></div>
+		<script id="topicItem" type="text/x-jquery-tmpl">
+          <h4>${title}<span class="alignright">${createdAt} (${name} さん) </span></h4>
+          <div>{{html content}}</div>
+        </script>
+    </div>
+    <div class="ui-body ui-body-a">
+		<div data-role="collapsible" data-collapsed="true">
+			<h3>コメントする</h3>
+			<form data-ajax="false" action="/topic/comment" id="commentForm"
+				style="display: none;">
+				<input type="hidden" id="topicIdField" name="topicId" class="w99" />
+				<div class="ma5">
+					<div id="nameError" class="warningMessageOne" style="display: none;" />
+					<label for="nameField" class="bold"><liquidtpl:text key="topic.name" /></label> 
+					<input id="nameField" name="name" class="w99" />
+				</div>
+				<div class="ma5">
+					<div id="contentError" class="warningMessageOne" style="display: none;" />
+					<label for="contentField" class="bold"><liquidtpl:text key="topic.comment" /></label>
+					<textarea cols="40" rows="8" id="contentField" name="content"></textarea>
+				</div>
+				<input type="submit" value="登録" data-theme="a" />
+			</form>
+		</div>&nbsp;
+		<ul id="commentList" class="listTable" style="display: none;" data-theme="a">
+		</ul>&nbsp;
+		<script id="commentItem" type="text/x-jquery-tmpl">
+          <li>
+          <h5>${number} ${name} さん <span class="alignright">${createdAt}</span></h5>
+          <div>{{html content}}</div>
+          </li>
+       </script>
+	</div>
+</div>

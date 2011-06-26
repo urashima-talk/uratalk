@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
     <cron>
-        <url>/cron/cleanupcounter?name=p</url>
-        <schedule>every 60 minutes</schedule>
-    </cron>
-    <cron>
-        <url>/cron/cleanupcounter?name=pP</url>
+        <url>/cron/cleanupcounter</url>
         <schedule>every 60 minutes</schedule>
     </cron>
 </cronentries>

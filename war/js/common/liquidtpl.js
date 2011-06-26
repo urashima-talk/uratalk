@@ -56,9 +56,18 @@ $.escapeHTML = function(value) {
     };
     
     return String(value)
-    .replace(/[<>&"']/g, replaceChars)
-    .replace(/\r\n/g, "<br/>")
-    .replace(/\n/g, "<br/>");
+    .replace(/[<>&"']/g, replaceChars);
+};
+
+$.simpleHTML = function(value) {
+	var html = "";
+    var lines = $.escapeHTML(value).split(/\r|\n|\r\n/);
+    var size = lines.length;
+    for(var i = 0; i < size; i += 2){
+    	html += lines[i];
+    	html += "<\/br>"
+    }
+    return html;
 };
 
 $.wrapLongText = function(str, step)
@@ -318,15 +327,78 @@ $.submit = function(formId, afterSuccess){
             } catch (e) {
                 $("#" + formId).find("#grobalError").text(e.toString()).slideDown("fast");
             }
-            $("#" + formId).find("input[type='submit']").attr('disabled', null);
+            $("#" + formId).find("input[type='submit']").removeAttr('disabled');
         },
         error: function(XMLHttpRequest, textStatus, errorThrown){
             var error = "Request Error: " + errorThrown + ". " + url;
             $("#" + formId).find("#grobalError").text(error + "\n" + result).slideDown("fast");
-            $("#" + formId).find("input[type='submit']").attr('disabled', null);
+            $("#" + formId).find("input[type='submit']").removeAttr('disabled');
         }
     });
 }
+
+/**
+ * initialize detail data
+ */
+$.initDetail = function ( detailId, itemTplId, url, params, callback ) {
+    var postParams = $.getUrlParams();
+    postParams["mode"] = "detail";
+    for (var i in params) {
+        postParams[i] = params[i];
+    }
+    $.ajax({
+        type: "POST",
+        url: url,
+        cache: false,
+        dataType: "text",
+        data: postParams,
+        success: function(result){
+            var jsonData = $.evalJsonCommentFiltered(result);
+            var values = jsonData.values;
+            if(values && values["redirect"]){
+                $("#" + detailId).empty();
+                location.href = values["redirect"];
+                return;
+            }
+
+            if(jsonData["result"] == "success"){
+                if(callback){
+                    callback(jsonData);
+                } else {
+                    $.setDetailValues(detailId, itemTplId, jsonData)
+                }
+            } else {
+                var error = "Unknown Error";
+                if(jsonData["errors"] && jsonData["errors"]["grobal"]){
+                    error = jsonData["errors"]["grobal"];
+                }
+                var errorHtml = $("<div>").addClass("mt10").addClass("warningMessage").text(error);
+                $("#" + detailId).replaceWith(errorHtml);
+            }
+            $("#" + detailId).show();
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+            var error = "Request Error: " + errorThrown + ". " + url;
+            errorHtml = $("<div>").addClass("mt10").addClass("warningMessage").text(error);
+            $("#" + detailId).replaceWith(errorHtml);
+            $("#" + detailId).show();
+        }
+    });
+};
+
+$.setDetailValues = function( detailId, itemTplId, jsonData ){
+    var values = jsonData.values;
+    if(values){
+        if($( "#" + itemTplId ).size() > 0) {
+            $( "#" + itemTplId ).tmpl( [values] ).appendTo( "#" + detailId );
+        } else {
+            $.tmpl( itemTplId, [values] ).appendTo( "#" + detailId );
+        }
+    } else {
+        $("#" + detailId).remove();
+    }
+}
+
 
 $.template( "optionsTemplate", '<option value="${key}">${value}<\/option>' );
 

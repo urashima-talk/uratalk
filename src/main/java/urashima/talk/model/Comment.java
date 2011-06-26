@@ -41,6 +41,10 @@ public class Comment implements Serializable {
     @Attribute(name="cA")
     private Date createdAt;
     
+    @Attribute(name="nS")
+    private String numberString;
+    
+    @Attribute(name="tR")
     private ModelRef<Topic> topicRef = new ModelRef<Topic>(Topic.class);
     
     /**
@@ -169,5 +173,13 @@ public class Comment implements Serializable {
 
 	public ModelRef<Topic> getTopicRef() {
 		return topicRef;
+	}
+
+	public void setNumberString(String numberString) {
+		this.numberString = numberString;
+	}
+
+	public String getNumberString() {
+		return numberString;
 	}
 }

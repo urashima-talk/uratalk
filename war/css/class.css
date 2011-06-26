@@ -1,0 +1,853 @@
+@charset "utf-8";
+/***************************************************
+汎用クラス：適宜編集
+***************************************************/
+
+/***************************************************
+  align
+--------------------------------------------------*/
+.center {
+  text-align:center;
+}
+.center img {
+  display:block:
+  margin:inherit auto;
+}
+.right {
+  text-align:right;
+}
+.left {
+  text-align:left;
+}
+
+.middle{
+	vertical-align:middle;
+}
+
+
+/***************************************************
+  float
+--------------------------------------------------*/
+.floatRight {
+  float:right;
+}
+.floatLeft {
+  float:left;
+}
+.clear {
+  clear:both;
+}
+.abs {
+  position:absolute;
+}
+
+/***************************************************
+  width&height
+--------------------------------------------------*/
+.wide {
+  width:100%;
+}
+.thin {
+  width:2%;
+  white-space:nowrap;
+}
+
+.w99 {
+  width:99%;
+}
+
+.w80 {
+  width:80%;
+}
+
+.w70 {
+  width:70%;
+}
+
+.half {/*半分*/
+  width:50%;
+}
+.w35 {
+  width:35%;
+}
+.w33 {
+  width:33%;
+}
+.w30 {
+  width:30%;
+}
+.w25 {
+  width:25%;
+}
+.w20 {
+  width:20%;
+}
+.w15 {
+  width:15%;
+}
+.w10 {
+  width:10%;
+}
+.em30{
+  width:30em;
+}
+.em25{
+  width:25em;
+}
+.em20{
+  width:20em;
+}
+.em10{
+  width:10em;
+}
+.em9{
+  width:9em;
+}
+/***************************************************
+  margin&padding
+--------------------------------------------------*/
+.noMP {
+  margin:0;
+  padding:0;
+}
+
+.noMargin {
+  margin:0px;
+}
+.mt0 {margin-top:0px !important;}
+.mr0 {margin-right:0px !important;}
+.mb0 {margin-bottom:0px !important;}
+.ml0 {margin-left:0px !important;}
+.ma0 {margin:0px !important;}
+
+.mt5 {margin-top:5px !important;}
+.mr5 {margin-right:5px !important;}
+.mb5 {margin-bottom:5px !important;}
+.ml5 {margin-left:5px !important;}
+.ma5 {margin:5px !important;}
+
+.mt10 {margin-top:10px !important;}
+.mr10 {margin-right:10px !important;}
+.mb10 {margin-bottom:10px !important;}
+.ml10 {margin-left:10px !important;}
+.ma10 {margin:10px !important;}
+
+.mt15 {margin-top:15px !important;}
+.mr15 {margin-right:15px !important;}
+.mb15 {margin-bottom:15px !important;}
+.ml15 {margin-left:15px !important;}
+.ma15 {margin:15px !important;}
+
+.mt20 {margin-top:20px !important;}
+.mr20 {margin-right:20px !important;}
+.mb20 {margin-bottom:20px !important;}
+.ml20 {margin-left:20px !important;}
+.ma20 {margin:20px !important;}
+
+.mh0 {margin-top:0px !important; margin-bottom:0px !important}
+.mh5 {margin-top:5px !important; margin-bottom:5px !important}
+.mh10 {margin-top:10px !important; margin-bottom:10px !important}
+.mh15 {margin-top:15px !important; margin-bottom:15px !important}
+.mh20 {margin-top:20px !important; margin-bottom:20px !important}
+
+.noPadding {
+  padding:0px;
+}
+.pt0 {padding-top:0px !important;}
+.pr0 {padding-right:0px !important;}
+.pb0 {padding-bottom:0px !important;}
+.pl0 {padding-left:0px !important;}
+.pa0 {padding:0px !important;}
+
+.pt5 {padding-top:5px !important;}
+.pr5 {padding-right:5px !important;}
+.pb5 {padding-bottom:5px !important;}
+.pl5 {padding-left:5px !important;}
+.pa5 {padding:5px !important;}
+
+.pt10 {padding-top:10px !important;}
+.pr10 {padding-right:10px !important;}
+.pb10 {padding-bottom:10px !important;}
+.pl10 {padding-left:10px !important;}
+.pa10 {padding:10px !important;}
+
+.pt15 {padding-top:15px !important;}
+.pr15 {padding-right:15px !important;}
+.pb15 {padding-bottom:15px !important;}
+.pl15 {padding-left:15px !important;}
+.pa15 {padding:15px !important;}
+
+.pt20 {padding-top:20px !important;}
+.pr20 {padding-right:20px !important;}
+.pb20 {padding-bottom:20px !important;}
+.pl20 {padding-left:20px !important;}
+.pa20 {padding:20px !important;}
+
+/***************************************************
+  font
+--------------------------------------------------*/
+.fs10 {
+  font-size:77%;
+  *font-size:70%;
+}
+.fs11 {
+  font-size:85%;
+}
+.fs13 {
+  font-size:100%;
+}
+.fs14 {
+  font-size:108%;
+}
+.fs16 {
+  font-size:123.1%;
+}
+.fs18 {
+  font-size:138.5%;
+}
+
+.fcOrange {
+  color:#f90;
+}
+.fcBlue {
+  color:#06c;
+}
+.fcGreen {
+  color:#0c6;
+}
+.fcRed {
+  color:#f00;
+}
+.fcPink {
+  color:#ff909f;
+}
+.fcYellow {
+  color:#fc0;
+}
+.fcGray {
+  color:#909090;
+}
+.date {
+}
+.fcBlack {
+  color:#000000;
+}
+.small {
+  font-size:0.8em;
+}
+
+.bold {
+  font-weight:bold !important;
+}
+/***************************************************
+  list
+--------------------------------------------------*/
+dl.note {
+  width:100%;
+  border:solid 1px #dddddd;
+  background:#f0f0f0;
+}
+dl.note dt {
+  margin:5px;
+  font-weight:bold;
+}
+dl.note dd {
+  margin:5px;
+  padding:5px;
+  background:#ffffff;
+}
+
+ul.icon_list {
+  width:100%;
+  margin:0 0 10px 0 !important;
+  padding:0 !important;
+}
+ul.icon_list li {
+  float:left;
+  width:20%;
+  padding:0 !important;
+  text-align:center;
+  background:none !important;
+}
+* html ul.icon_list li {
+  width:19.9%;
+}
+ul.icon_list li a {
+  text-decoration:none;
+}
+ul.icon_list li a:hover {
+  text-decoration:underline;
+}
+
+
+ul.parallel,
+ul.parallel_2,
+ul.parallel_3,
+ul.parallel_4 {
+  margin:0 !important;
+  padding:0 !important;
+}
+ul.parallel li,
+ul.parallel_2 li,
+ul.parallel_3 li,
+ul.parallel_4 li {
+  float:left;
+  margin:0 0 1em 0;
+  padding:5px 0 !important;
+  background-image:none !important;
+}
+ul.parallel_2 li {
+  width:50%;
+	* width:49.9%;
+}
+ul.parallel_3 li {
+  width:33%;
+}
+ul.parallel_4 li {
+  width:25%;
+  * width:24.9%;
+}
+
+/***************************************************
+  table
+--------------------------------------------------*/
+.nowrap {
+  white-space:nowrap;
+}
+.thc th {/* tableに指定するとthを一括でセンタリング */
+  text-align:center;
+}
+.thl th {/* tableに指定するとthを一括で左詰め */
+  text-align:left;
+}
+.wordBreak {
+  word-break:break-all;
+  word-wrap:break-word;
+}
+.sellim {
+  width: 420px
+}
+/***************************************************
+  link
+--------------------------------------------------*/
+.caution {
+  font-weight:bold;
+  color:#f00;
+}
+
+/* 汎用 */
+a.icon_add {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/add.gif) no-repeat center left;
+}
+
+a.icon_edit {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/pencil.gif) no-repeat center left;
+}
+
+a.icon_setting {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/setting.gif) no-repeat center left;
+}
+
+a.icon_delete {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/delete.gif) no-repeat center left;
+}
+
+a.icon_tool {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/tool.gif) no-repeat center left;
+}
+
+a.icon_inspection {
+  padding:1px 0 1px 20px;
+  background:url(/img/icon/16/sitemap.gif) no-repeat center left;
+}
+
+a.icon_search {
+  padding:1px 0 1px 20px;
+ 	min-height:16px;
+ background:url(/img/icon/16/search.gif) no-repeat center left;
+}
+
+a.icon_stop {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/stop.gif) no-repeat center left;
+}
+
+a.icon_alert {
+  padding:1px 0 1px 17px;
+	min-height:16px;
+  background:url(/img/icon/16/alert.gif) no-repeat center left;
+}
+
+a.icon_paste {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/paste.gif) no-repeat center left;
+}
+
+a.icon_cd {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/cd.gif) no-repeat center left;
+}
+
+
+/* ファイル管理系 */
+
+a.icon_file, a.icon_page {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-silver.gif) no-repeat center left;
+}
+a.icon_file_edit, a.icon_page_edit {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-edit.gif) no-repeat center left;
+}
+a.icon_file_check, a.icon_page_check {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-check.gif) no-repeat center left;
+}
+a.icon_file_delete, a.icon_page_delete {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-delete.gif) no-repeat center left;
+}
+a.icon_file_add, a.icon_page_add {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-add.gif) no-repeat center left;
+}
+a.icon_file_error, a.icon_page_error {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-error.gif) no-repeat center left;
+}
+a.icon_file_up, a.icon_page_up {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-up.gif) no-repeat center left;
+}
+a.icon_file_down, a.icon_page_down {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-down.gif) no-repeat center left;
+}
+a.icon_file_search, a.icon_page_search {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-search.gif) no-repeat center left;
+}
+a.icon_file_lock, a.icon_page_lock {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-lock.gif) no-repeat center left;
+}
+a.icon_file_save, a.icon_page_save {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-save.gif) no-repeat center left;
+}
+
+a.icon_folder {
+  padding:1px 0 1px 20px;
+ 	min-height:16px;
+ background:url(/img/icon/16/folder.gif) no-repeat center left;
+}
+
+a.icon_add_folder {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/folder-add.gif) no-repeat center left;
+}
+
+a.icon_upload {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/arrow-up.gif) no-repeat center left;
+}
+
+
+/* ユーザ系 */
+
+a.icon_user {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/user.gif) no-repeat center left;
+}
+a.icon_user-add {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/user-add.gif) no-repeat center left;
+}
+a.icon_user {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/user.gif) no-repeat center left;
+}
+a.icon_user-multi {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/user-multi.gif) no-repeat center left;
+}
+
+
+/* セキュリティ */
+a.icon_lock {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/lock.gif) no-repeat center left;
+}
+
+a.icon_unlock {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/unlock.gif) no-repeat center left;
+}
+
+a.icon_key {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/key.gif) no-repeat center left;
+}
+
+a.icon_help {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/help.gif) no-repeat center left;
+}
+a.icon_comment-help {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/comment-help.gif) no-repeat center left;
+}
+
+
+/* メール系 */
+a.icon_email, a.icon_mail {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/email.gif) no-repeat center left;
+}
+a.icon_email-delete, a.icon_mail-delete {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/email-delete.gif) no-repeat center left;
+}
+
+a.icon_mailAcount {
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_mail_acount.gif) no-repeat center left;
+}
+
+a.icon_mailingList {
+  display:block;
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_mailing_list.gif) no-repeat center left;
+}
+
+a.icon_spamMail {
+  display:block;
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_spam_mail.gif) no-repeat center left;
+}
+
+a.icon_mailVirus {
+  display:block;
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_mail_virus.gif) no-repeat center left;
+}
+
+a.icon_back {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/arrow-left.gif) no-repeat center left;
+}
+
+a.icon_next {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/arrow-right.gif) no-repeat center left;
+}
+
+a.icon_account_b{
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_account_b.gif) no-repeat center left;
+}
+a.icon_data_1{
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_data_1.gif) no-repeat center left;
+}
+a.icon_app{
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_app.gif) no-repeat center left;
+}
+a.icon_info{
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_info.gif) no-repeat center left;
+}
+a.icon_account_g{
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_account_g.gif) no-repeat center left;
+}
+
+/* ドメイン */
+a.icon_domain{
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/contact.gif) no-repeat center left;
+}
+a.icon_domain-alias, a.icon_contact-curve-right {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/contact-curve-right.gif) no-repeat center left;
+}
+a.icon_subdomain, a.icon_contact-add {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/contact-add.gif) no-repeat center left;
+}
+
+a.icon_password{
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/lock.gif) no-repeat center left;
+}
+
+/* DB系 */
+a.icon_db{
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-silver.gif) no-repeat center left;
+}
+a.icon_db-edit{
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-edit.gif) no-repeat center left;
+}
+a.icon_db-search{
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-search.gif) no-repeat center left;
+}
+a.icon_db-user {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-user.gif) no-repeat center left;
+}
+a.icon_db-lock {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-lock.gif) no-repeat center left;
+}
+a.icon_db-add {
+  padding:1px 0 1px 20px;
+ 	min-height:16px;
+ background:url(/img/icon/16/database-add.gif) no-repeat center left;
+}
+a.icon_db-check {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-check.gif) no-repeat center left;
+}
+a.icon_db-delete {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-delete.gif) no-repeat center left;
+}
+a.icon_db-error {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-error.gif) no-repeat center left;
+}
+a.icon_db-save {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-save.gif) no-repeat center left;
+}
+a.icon_db-start {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-start.gif) no-repeat center left;
+}
+a.icon_db-stop {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/database-stop.gif) no-repeat center left;
+}
+
+/* ページ系 */
+a.icon_page-search {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/page-search.gif) no-repeat center left;
+}
+
+/* アプリケーション */
+a.icon_apps, a.icon_monitor {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/monitor.gif) no-repeat center left;
+}
+
+
+
+/* グラフ系 */
+a.icon_chart {
+  padding:1px 0 1px 20px;
+	min-height:16px;
+  background:url(/img/icon/16/chart.gif) no-repeat center left;
+}
+a.icon_data1 {
+  padding:1px 0 1px 20px;
+  background:url(/img/common/icon/icon_data1.gif) no-repeat center left;
+}
+
+/*昇順（下矢印）*/
+a.ascend{
+background:url(/img/common/btn/btn_down.gif) no-repeat center right;
+padding:2px 20px 1px 0px;
+margin:0px;
+}
+
+/*降順（上矢印）*/
+a.descend{
+background:url(/img/common/btn/btn_up.gif) no-repeat center right;
+padding:2px 20px 1px 0px;
+margin:0px;
+}
+
+
+/* リンク文頭にアイコンを付ける際に適宜宣言
+.icon01 {
+  padding:0 0 0 15px;
+  background:url() no-repeat center left;
+}
+*/
+/***************************************************
+  box
+--------------------------------------------------*/
+.box_recital {
+  padding:5px;
+  font-size:x-small;
+  *font-size:xx-small;
+  color:#999999;
+  background:#f3f3f3;
+}
+.box_grayLine {
+  margin:20px 0;
+  padding:5px;
+  border:solid 1px #e0e0e0;
+  background:#f6f6f6;
+}
+.box_grayLineBold {
+  margin:20px 0;
+  padding:5px;
+  border:solid 5px #e0e0e0;
+}
+.box_grayBack {
+  margin:20px 0;
+  padding:10px;
+  background:#f3f3f3;
+}
+.box_attention {
+  padding:20px 10px;
+  text-align:center;
+  background:#f3f3f3;
+}
+
+/***************************************************
+  prevnext
+--------------------------------------------------*/
+div.prevnext {
+  clear:both;
+  padding:0;
+  border-top:solid 1px #999999;
+}
+div.prevnext p {
+  margin:0;
+  padding:0;
+}
+
+/***************************************************
+  other
+--------------------------------------------------*/
+.hidden {
+  display:none;
+}
+
+.rss {
+  text-align:right;
+}
+
+.emergency{
+  background:#FFD5D5;
+}
+
+/***************************************************
+    ClearFix
+--------------------------------------------------*/
+ul.parallel_4:after,
+ul.parallel_3:after,
+ul.parallel_2:after,
+ul.parallel:after,
+ul.icon_list:after,
+dl.note:after,
+div.prevnext:after,
+div.hlBox_bold:after,
+div.hlBox_gray:after,
+.clearfix:after {
+    content:".";
+    height:0px;
+    clear:both;
+    display:block;
+    visibility:hidden;
+}
+ul.parallel_4,
+ul.parallel_3,
+ul.parallel_2,
+ul.parallel,
+ul.icon_list,
+dl.note,
+div.prevnext,
+div.hlBox_bold,
+div.hlBox_gray,
+.clearfix {
+    display:inline-block;
+}
+* html ul.parallel_4,
+* html ul.parallel_3,
+* html ul.parallel_2,
+* html ul.parallel,
+* html ul.icon_list,
+* html dl.note,
+* html div.prevnext,
+* html div.hlBox_bold,
+* html div.hlBox_gray,
+* html .clearfix {
+    height:1%;
+}
+ul.parallel_4:after,
+ul.parallel_3:after,
+ul.parallel_2:after,
+ul.parallel:after,
+ul.icon_list:after,
+dl.note:after,
+div.prevnext:after,
+div.hlBox_bold:after,
+div.hlBox_gray:after,
+.clearfix:after {
+    display:block;
+}
+

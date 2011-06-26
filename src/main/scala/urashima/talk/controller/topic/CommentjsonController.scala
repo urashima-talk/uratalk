@@ -24,7 +24,7 @@ class CommentjsonController extends AbstractJsonDataController {
       }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.dataNotFound"))
-        null
+        tojson("")
     }
   }
 
@@ -41,14 +41,14 @@ class CommentjsonController extends AbstractJsonDataController {
           case None => {
             addError(Constants.KEY_GLOBAL_ERROR,
               LanguageUtil.get("error.dataNotFound"))
-            null
+            tojson("")
           }
         }
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
           LanguageUtil.get("error.dataNotFound"))
-        null
+        tojson("")
       }
     }
 
@@ -65,19 +65,16 @@ class CommentjsonController extends AbstractJsonDataController {
             tojson(comment)
           }
           case None => {
-            addError(Constants.KEY_GLOBAL_ERROR,
-              LanguageUtil.get("error.dataNotFound"))
-            null
+            tojson(TopicService.createNewComment(topic))
           }
         }
       }
       case None => {
         addError(Constants.KEY_GLOBAL_ERROR,
           LanguageUtil.get("error.dataNotFound"))
-        null
+        tojson("")
       }
     }
-
   }
 }
 

@@ -2,8 +2,46 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>test</title>
-<link rel="stylesheet" href="css/style.css" />
+<title><liquidtpl:text key="title"/></title>
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/js/plugin/jquery.mobile-1.0b1.min.css" />
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<script src="/js/common/jquery-1.6.1.min.js" type="text/javascript"></script>
+<script src="/js/common/jquery.tmpl.min.js" type="text/javascript"></script>
+<script src="/js/common/jquery.tmplPlus.min.js" type="text/javascript"></script>
+<script src="/js/common/jquery.datalink.js" type="text/javascript"></script>
+<script src="/js/common/jquery.json-2.2.min.js" type="text/javascript"></script>
+<script src="/js/common/liquidtpl.js" type="text/javascript"></script>
+<script src="/js/scripts.js?app=uratalk" type="text/javascript"></script>
+<script src="/js/plugin/jquery.mobile-1.0b1.min.js"
+	type="text/javascript"></script>
 </head>
-<body>
+<body id="body">
+	<div data-role="page">
+		<div data-role="header">
+		    <h4><liquidtpl:text key="title"/></h4>
+			<div id="mainMenu" data-role="navbar">
+				<ul id="mainMenuContainer">
+				  <li><a data-ajax="false" href="/index">ホーム</a></li>
+				  <li><a href="/topic/form" data-transition="pop">スレッドをたてる</a></li>
+				</ul>
+			</div>
+			<!-- /navbar -->
+		</div>
+		<!-- /header -->
+		<div id="content" data-role="content" data-theme="a">
+			<liquidtpl:content/>
+		</div>
+		<!-- /content -->
+		<div data-role="footer">
+			<p class="alignright"></p>
+		</div>
+		<!-- /header -->
+	</div>
+	<!-- /page -->
+	<script type="text/javascript">
+	//<![CDATA[
+　　　//]]>
+	</script>
 </body>
+</html>
