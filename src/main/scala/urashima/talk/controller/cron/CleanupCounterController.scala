@@ -9,6 +9,7 @@ import urashima.talk.service.TopicService
 import org.slim3.controller.Controller
 import org.slim3.controller.Navigation
 import scala.collection.JavaConversions._
+import urashima.talk.service.CommentChannelService
 
 class CleanupcounterController extends Controller {
 
@@ -20,6 +21,7 @@ class CleanupcounterController extends Controller {
     //Todo paginate
     TopicService.fetchAll.foreach { topic =>
       CounterLogService.cleanupDatastore("c_%s".format(topic.getNumberString))
+      CommentChannelService.cleanupDatastore(topic.getNumberString)
     }
     null
   }

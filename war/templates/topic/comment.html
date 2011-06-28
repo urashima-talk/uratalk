@@ -7,6 +7,7 @@
             $.topicId = $.urlParams['topicId'];
             $.commentForm = {};
             $.initForm("commentForm", "/topic/commentjson", {"topicId": $.topicId});
+            $.connected = false;
             
             $("#topicDetail").empty();
             $.initDetail( "topicDetail", "topicItem", "/topic/json", {"id": $.topicId}, function(jsonData){
@@ -27,7 +28,40 @@
                     if(size > 0){
                         $("#commentList").listview();
                     }
-                });         
+                    $.ajax({
+                        type : "POST",
+                        url : "/topic/commentchannel",
+                        cache : false,
+                        dataType : "text",
+                        data : {"topicId": $.topicId},
+                        success : function(result) {
+                            var jsonData = $.evalJsonCommentFiltered(result);
+                            if( jsonData['channelToken'] ){
+                                channel = new goog.appengine.Channel(jsonData['channelToken']);
+                                socket = channel.open();
+                                socket.onopen = function(){$.connected = true;};
+                                socket.onmessage = function(message){
+                                	var messageData = $.evalJsonCommentFiltered(message.data);
+                                	console.dir(messageData);
+                                	messageData['content'] = $.simpleHTML(messageData['content']);
+                                	
+                                	var newLine = $("#commentItem").tmpl(messageData).hide();
+                                	newLine.prependTo("#commentList");
+                                	$("#commentList").listview("refresh");
+                                	newLine.slideDown();
+                                };
+                                socket.onerror = function(error){
+                                	//console.dir(error)
+                                };
+                                socket.onclose = function(){$.connected = false;};
+                            	
+                            }
+                        }, 
+                        error : function(){
+                        }
+                    });
+                    
+                });       
             }
         });
     });

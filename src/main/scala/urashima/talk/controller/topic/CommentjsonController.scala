@@ -1,12 +1,12 @@
 package urashima.talk.controller.topic
-import java.util.logging.Logger
 import dispatch.json.JsValue
-import org.dotme.liquidtpl.controller.AbstractJsonDataController
+import java.util.logging.Logger
 import java.util.Date
-import urashima.talk.service.TopicService
+import javax.servlet.ServletRequest
+import org.dotme.liquidtpl.controller.AbstractJsonDataController
+import org.dotme.liquidtpl.{Constants, LanguageUtil}
 import urashima.talk.lib.util.AppConstants
-import org.dotme.liquidtpl.Constants
-import org.dotme.liquidtpl.LanguageUtil
+import urashima.talk.service.TopicService
 
 class CommentjsonController extends AbstractJsonDataController {
 
@@ -16,7 +16,6 @@ class CommentjsonController extends AbstractJsonDataController {
     import sjson.json.JsonSerialization._
     import urashima.talk.service.TopicService.CommentProtocol._
     val startDate: Date = new Date
-
     val topicId = request.getParameter(AppConstants.KEY_TOPIC_ID)
     TopicService.fetchOne(topicId) match {
       case Some(topic) => {

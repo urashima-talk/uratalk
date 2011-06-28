@@ -37,7 +37,7 @@ object TopicService {
       def writes(topic: Topic): JsValue = {
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (topic.getKey != null) KeyFactory.keyToString(topic.getKey) else null)),
-          (JsString("name"), tojson(if(topic.getName.isEmpty) LanguageUtil.get("topic.defaultName") else topic.getName)),
+          (JsString("name"), tojson(if (topic.getName == null || topic.getName.size == 0) LanguageUtil.get("topic.defaultName") else topic.getName)),
           (JsString("title"), tojson(topic.getTitle)),
           (JsString("content"), tojson(topic.getContent)),
           (JsString("isNoticed"), tojson(topic.isNoticed.toString)),
@@ -62,7 +62,7 @@ object TopicService {
         JsObject(List(
           (JsString(Constants.KEY_ID), tojson(if (comment.getKey != null) KeyFactory.keyToString(comment.getKey) else null)),
           (JsString(AppConstants.KEY_TOPIC_ID), tojson(if (comment.getTopicRef != null) KeyFactory.keyToString(comment.getTopicRef.getKey) else null)),
-          (JsString("name"), tojson(if(comment.getName.isEmpty) LanguageUtil.get("topic.defaultName") else comment.getName)),
+          (JsString("name"), tojson(if (comment.getName == null || comment.getName.size == 0) LanguageUtil.get("topic.defaultName") else comment.getName)),
           (JsString("title"), tojson(comment.getTitle)),
           (JsString("content"), tojson(comment.getContent)),
           (JsString("isNoticed"), tojson(comment.isNoticed.toString)),
@@ -129,10 +129,6 @@ object TopicService {
     Datastore.delete(topic.getKey)
   }
 
-  val isPublishedMapAll: List[(String, String)] = List[(String, String)](
-    true.toString -> LanguageUtil.get("topic.isPublished.true"),
-    false.toString -> LanguageUtil.get("topic.isPublished.false"));
-
   /**
    * Comment
    */
@@ -187,7 +183,7 @@ object TopicService {
     Datastore.delete(comment.getKey)
   }
 
-  def createNewComment(topic:Topic): Comment = {
+  def createNewComment(topic: Topic): Comment = {
     val result: Comment = new Comment
     result.setName("")
     result.setTitle("")
@@ -214,7 +210,5 @@ object TopicService {
     model.getTopicRef.setModel(topic)
     Datastore.put(model).apply(0)
   }
-  
-  
 
 }

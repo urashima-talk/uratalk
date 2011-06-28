@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-    <application>ura-twi</application>
-    <version>1</version>
-    <static-files>
-        <include path="/**.*"/>
-    </static-files>
-    <system-properties>
-        <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
-    </system-properties>
-    <ssl-enabled>true</ssl-enabled>
-    <!--
-    <sessions-enabled>true</sessions-enabled>
-    <system-properties> 
-        <property name="com.google.gdata.DisableCookieHandler" value="true"/> 
-    </system-properties>
-    -->
+	<application>ura-twi</application>
+	<version>1</version>
+	<static-files>
+		<include path="/**.*" />
+	</static-files>
+	<system-properties>
+		<property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties" />
+	</system-properties>
+	<ssl-enabled>true</ssl-enabled>
+	<sessions-enabled>false</sessions-enabled>
+	<!-- <sessions-enabled>true</sessions-enabled> <system-properties> <property 
+		name="com.google.gdata.DisableCookieHandler" value="true"/> </system-properties> -->
+	<inbound-services>
+		<service>channel_presence</service>
+	</inbound-services>
 </appengine-web-app>
