@@ -1,10 +1,10 @@
-<div class="box_grayLinewhite mt5">
     <script type="text/javascript">
         //<![CDATA[
 
         $(function(){
             $.topicForm = {};
             $.initForm("topicForm", "/topic/json", null);
+            $("#subTitle").text("スレッド登録");
         });
         //]]>
     </script>
@@ -12,18 +12,12 @@
         <div class="ma5">
             <div id="nameError" class="warningMessageOne" style="display:none;" />
             <label for="nameField" class="bold"><liquidtpl:text key="topic.name"/></label>
-            <input id="nameField" name="name" class="w99"/>
+            <input id="nameField" name="name"/>
         </div>
         <div class="ma5">
             <div id="titleError" class="warningMessageOne" style="display:none;" />
             <label for="titleField" class="bold"><liquidtpl:text key="topic.title"/></label>
-            <input id="titleField" name="title" class="w99"/>
-        </div>
-        <div class="ma5">
-            <div id="contentError" class="warningMessageOne" style="display:none;" />
-            <label for="contentField" class="bold"><liquidtpl:text key="topic.content"/></label>
-            <textarea cols="40" rows="8" id="contentField" name="content"></textarea>
+            <input id="titleField" name="title"/>
         </div>
         <input type="submit" value="登録"  data-theme="a"/>
     </form>
-</div>
