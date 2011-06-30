@@ -62,9 +62,8 @@ $.simpleHTML = function(value) {
 	var lines = $.escapeHTML(value).replace(re, '<a target="_blank" class="ui-link" href="$1">$1<\/a>').split(/\r|\n|\r\n/);
 	var size = lines.length;
 	for ( var i = 0; i < size; i += 2) {
-		html += "<p>";
 		html += lines[i];
-		html += "<\/p>"
+		html += "<br\/>"
 	}
 	return html;
 };

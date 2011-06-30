@@ -11,19 +11,17 @@ import com.google.appengine.api.taskqueue.{ QueueFactory, TaskOptions }
 import dispatch.json._
 import java.util.logging.Logger
 import java.util.Date
+import javax.servlet.http.{ Cookie, HttpServletRequest, HttpServletResponse }
+import javax.servlet.{ ServletRequest, ServletResponse }
+import org.dotme.liquidtpl.lib.memcache.{ CounterLogService, ReverseCounterLogService }
 import org.dotme.liquidtpl.{ Constants, LanguageUtil }
 import org.slim3.datastore.Datastore
 import scala.collection.JavaConversions._
 import sjson.json.JsonSerialization._
-import sjson.json.{ DefaultProtocol, Format }
-import urashima.talk.model.Topic
-import sjson.json.JsonSerialization
-import urashima.talk.model.Comment
-import urashima.talk.meta.TopicMeta
-import org.dotme.liquidtpl.lib.memcache.CounterLogService
-import org.dotme.liquidtpl.lib.memcache.ReverseCounterLogService
-import urashima.talk.meta.CommentMeta
+import sjson.json.{ DefaultProtocol, Format, JsonSerialization }
 import urashima.talk.lib.util.AppConstants
+import urashima.talk.meta.{ CommentMeta, TopicMeta }
+import urashima.talk.model.{ Comment, Topic }
 
 object TopicService {
   val logger = Logger.getLogger(TopicService.getClass.getName)
@@ -43,7 +41,9 @@ object TopicService {
           (JsString("isNoticed"), tojson(topic.isNoticed.toString)),
           (JsString("isHidden"), tojson(topic.isHidden.toString)),
           (JsString("number"), tojson(topic.getNumberString)),
-          (JsString("createdAt"), if (topic.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(topic.getCreatedAt)) else tojson(""))))
+          (JsString("createdAt"), if (topic.getCreatedAt != null) tojson(AppConstants.dateTimeFormat.format(topic.getCreatedAt)) else tojson("")),
+          (JsString("lastCommentAt"), if (topic.getLastCommentAt != null) tojson(AppConstants.dateTimeFormat.format(topic.getLastCommentAt)) else tojson("")),
+          (JsString("lastCommentNumber"), tojson(topic.getLastCommentNumberString))))
       }
     }
   }
@@ -93,7 +93,7 @@ object TopicService {
 
   def fetchAll(): List[Topic] = {
     val m: TopicMeta = TopicMeta.get
-    Datastore.query(m).asList.toList
+    Datastore.query(m).sort(m.lastCommentAt.desc).asList.toList
   }
 
   def createNew(): Topic = {
@@ -105,6 +105,7 @@ object TopicService {
     result.setHidden(false)
     result.setNoticed(false)
     result.setNumberString("")
+    result.setLastCommentNumberString("")
     result
   }
 
@@ -119,6 +120,12 @@ object TopicService {
     if (model.getCreatedAt == null) {
       model.setCreatedAt(now)
     }
+
+    if (model.getLastCommentAt == null) {
+      model.setLastCommentAt(now)
+      model.setLastCommentNumberString("0")
+    }
+
     Datastore.put(model).apply(0)
   }
 
@@ -208,7 +215,36 @@ object TopicService {
       model.setCreatedAt(now)
     }
     model.getTopicRef.setModel(topic)
-    Datastore.put(model).apply(0)
+    val result: Key = Datastore.put(model).apply(0)
+
+    QueueFactory.getDefaultQueue.add(Builder.withUrl("/task/topic/refreshdate")
+      .param(AppConstants.KEY_TOPIC_ID, KeyFactory.keyToString(topic.getKey))
+      .method(Method.POST))
+    result
+  }
+
+  def createCookieUserName(name: String): Cookie = {
+    val newCookie: Cookie = new Cookie(AppConstants.KEY_COOKIE_USER_NAME, java.net.URLEncoder.encode(name, Constants.CHARSET))
+    newCookie.setPath("/")
+    newCookie
+  }
+
+  def getCookieUserName(request: ServletRequest): String = {
+    val cookies: Array[Cookie] = request.asInstanceOf[HttpServletRequest].getCookies
+    if (cookies == null || cookies.size == 0) {
+      null
+    } else {
+      cookies.find { cookie: Cookie =>
+        cookie.getName == AppConstants.KEY_COOKIE_USER_NAME
+      } match {
+        case Some(cookie) => {
+          java.net.URLDecoder.decode(cookie.getValue, Constants.CHARSET)
+        }
+        case None => {
+          null
+        }
+      }
+    }
   }
 
 }

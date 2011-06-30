@@ -1,7 +1,21 @@
 	<script type="text/javascript">
     //<![CDATA[
     $(function(){
+    	$.toggleCommentForm = function(){
+    		if($("#commentFormContainer").css("display") == "none") {
+    			$("#commentFormContainer").slideDown();
+    			$("#menuAdd").addClass("ui-btn-active");
+    		} else {
+    			$("#commentFormContainer").slideUp();
+    			$("#menuAdd").removeClass("ui-btn-active");
+    		}
+    		return false;
+    	};
+    	
         $("#body").live('pageshow', function(){
+        	$("#menuAdd").attr('href', null).bind('click', $.toggleCommentForm);
+        	$("#menuAddIcon").attr("src", "/img/icon/comment.png");
+        	
             $.urlParams = $.getUrlParams();
             $.topicId = $.urlParams['topicId'];
             $.commentForm = {};
@@ -14,6 +28,7 @@
                 var size = values.length;
                 values['content'] = $.simpleHTML(values['content']);
                 $("#subTitle").text(values['title']);
+                $("#subTitleContainer").show();
             });  
             
             if($("#commentList > li").size() == 0){
@@ -26,6 +41,8 @@
                     $.setListValues("commentList", "commentItem", false, jsonData);
                     if(size > 0){
                         $("#commentList").listview();
+                    } else {
+                    	$.toggleCommentForm();
                     }
                     $.ajax({
                         type : "POST",
@@ -43,7 +60,6 @@
                                 	var messageData = $.evalJsonCommentFiltered(message.data);
                                 	console.dir(messageData);
                                 	messageData['content'] = $.simpleHTML(messageData['content']);
-                                	
                                 	var newLine = $("#commentItem").tmpl(messageData).hide();
                                 	newLine.prependTo("#commentList");
                                 	$("#commentList").listview("refresh");
@@ -66,8 +82,7 @@
     });
     //]]>		
 	</script>
-		<div data-role="collapsible" data-collapsed="true">
-		    <h3>コメントする</h3>
+		<div id="commentFormContainer" style="display:none;">
 			<form data-ajax="false" action="/topic/comment" id="commentForm"
 				style="display: none;">
 				<input type="hidden" id="topicIdField" name="topicId" />
@@ -81,9 +96,9 @@
 					<label for="contentField" class="bold"><liquidtpl:text key="topic.comment" /></label>
 					<textarea cols="40" rows="8" id="contentField" name="content"></textarea>
 				</div>
-				<input type="submit" value="送信" data-theme="a" />
+				<input type="submit" value="送信" data-theme="a" />&nbsp;
 			</form>
-		</div>&nbsp;
+		</div>
 		<ul id="commentList" class="listTable" style="display: none;" data-theme="a">
 		</ul>&nbsp;
 		<script id="commentItem" type="text/x-jquery-tmpl">

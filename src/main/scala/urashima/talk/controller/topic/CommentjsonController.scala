@@ -4,9 +4,10 @@ import java.util.logging.Logger
 import java.util.Date
 import javax.servlet.ServletRequest
 import org.dotme.liquidtpl.controller.AbstractJsonDataController
-import org.dotme.liquidtpl.{Constants, LanguageUtil}
+import org.dotme.liquidtpl.{ Constants, LanguageUtil }
 import urashima.talk.lib.util.AppConstants
 import urashima.talk.service.TopicService
+import urashima.talk.model.Comment
 
 class CommentjsonController extends AbstractJsonDataController {
 
@@ -64,7 +65,12 @@ class CommentjsonController extends AbstractJsonDataController {
             tojson(comment)
           }
           case None => {
-            tojson(TopicService.createNewComment(topic))
+            val comment: Comment = TopicService.createNewComment(topic)
+            val cookieUserName = TopicService.getCookieUserName(request)
+            if ((cookieUserName != null) && (cookieUserName.size > 0)) {
+              comment.setName(cookieUserName)
+            }
+            tojson(comment)
           }
         }
       }

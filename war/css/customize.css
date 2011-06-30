@@ -1,5 +1,13 @@
 @charset "utf-8";
 
 p.ui-li-desc {
-    white-space: normal !important;
+	white-space: normal;
+}
+
+#mainMenu .ui-btn-inner {
+   padding: 0px;	
+}
+
+#commentList .ui-li {
+   padding: 15px;
 }

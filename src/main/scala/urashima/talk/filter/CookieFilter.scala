@@ -56,6 +56,7 @@ class CookieFilter extends Filter {
   def createCookieUserId(request: ServletRequest, response: ServletResponse): String = {
     val uid: String = UUID.randomUUID().toString()
     val newCookie: Cookie = new Cookie(AppConstants.KEY_COOKIE_USER_ID, uid)
+    newCookie.setPath("/")
     response.asInstanceOf[HttpServletResponse].addCookie(newCookie)
     uid
   }

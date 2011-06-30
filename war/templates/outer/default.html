@@ -21,14 +21,13 @@
 <body id="body">
 	<div data-role="page">
 		<div data-role="header">
-		    <h4><liquidtpl:text key="title"/></h4>
 			<div id="mainMenu" data-role="navbar">
 				<ul id="mainMenuContainer">
-				  <li><a data-ajax="false" href="/index">ホーム</a></li>
-				  <li><a data-ajax="false" href="/topic/form">スレッドをたてる</a></li>
+				  <li><a id="menuList" data-ajax="false" class="center" href="/index"><img id="menuListIcon" src="/img/icon/list.png" alt="スレッド一覧" height="32" style="margin:0px;" /></a></li>
+				  <li><a id="menuAdd" data-ajax="false" class="center" href="/topic/form"><img id="menuAddIcon" src="/img/icon/add.png" alt="スレッドをたてる" height="32" style="margin:0px;" /></a></li>
 				</ul>
 			</div>
-			<div class="center"><strong id="subTitle"></strong></div>
+			<div id="subTitleContainer" style="display:none;" class="center"><strong id="subTitle"></strong></div>
 		</div>
 		<!-- /header -->
 		<div id="content" data-role="content" data-theme="a">

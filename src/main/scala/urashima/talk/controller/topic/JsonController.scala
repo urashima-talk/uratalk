@@ -8,6 +8,7 @@ import urashima.talk.service.TopicService
 import urashima.talk.lib.util.AppConstants
 import org.dotme.liquidtpl.Constants
 import org.dotme.liquidtpl.LanguageUtil
+import urashima.talk.model.Topic
 
 class JsonController extends AbstractJsonDataController {
 
@@ -51,7 +52,12 @@ class JsonController extends AbstractJsonDataController {
         }
       }
     } else {
-      tojson(TopicService.createNew)
+      val topic: Topic = TopicService.createNew
+      val cookieUserName = TopicService.getCookieUserName(request)
+      if ((cookieUserName != null) && (cookieUserName.size > 0)) {
+        topic.setName(cookieUserName)
+      }
+      tojson(topic)
     }
   }
 }

@@ -43,6 +43,13 @@ public class Topic implements Serializable {
     @Attribute(name="nS")
     private String numberString;
 
+    @Attribute(name="lCA")
+    private Date lastCommentAt;
+    
+    @Attribute(name="lCNS")
+    private String lastCommentNumberString;
+
+    
     /**
      * Returns the key.
      *
@@ -173,5 +180,21 @@ public class Topic implements Serializable {
 
 	public String getNumberString() {
 		return numberString;
+	}
+
+	public void setLastCommentAt(Date lastCommentAt) {
+		this.lastCommentAt = lastCommentAt;
+	}
+
+	public Date getLastCommentAt() {
+		return lastCommentAt;
+	}
+
+	public void setLastCommentNumberString(String lastCommentNumberString) {
+		this.lastCommentNumberString = lastCommentNumberString;
+	}
+
+	public String getLastCommentNumberString() {
+		return lastCommentNumberString;
 	}
 }

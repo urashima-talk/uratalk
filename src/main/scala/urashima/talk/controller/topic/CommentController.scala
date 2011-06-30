@@ -10,6 +10,7 @@ import urashima.talk.model.Topic
 import urashima.talk.model.Comment
 import urashima.talk.lib.util.TextUtils
 import urashima.talk.service.CommentChannelService
+import javax.servlet.http.HttpServletResponse
 
 class CommentController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
@@ -68,11 +69,13 @@ class CommentController extends AbstractFormController {
             comment.setReferenceKey(TextUtils.encode(request.getRemoteAddr))
 
             TopicService.saveComment(comment, topic)
+            response.asInstanceOf[HttpServletResponse].addCookie(TopicService.createCookieUserName(comment.getName))
 
             try {
               import sjson.json.JsonSerialization._
               import urashima.talk.service.TopicService.CommentProtocol._
-              CommentChannelService.sendUpdateToUsers(topic.getNumberString, tojson(comment))
+              val channelId = CommentChannelService.getChannelId(request, topic.getNumberString);
+              CommentChannelService.sendUpdateToUsers(topic.getNumberString, tojson(comment), channelId)
             } finally {
             }
           }

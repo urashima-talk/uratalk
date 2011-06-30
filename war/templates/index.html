@@ -1,7 +1,7 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function(){
-    	$.template( "topicItem", '<li><a data-ajax="false" href="/topic/comment?topicId=${id}">${title} <span class="alignright small">${createdAt} (${name} さん) <\/span><\/a><\/li>' );
+    	$.template( "topicItem", '<li><a data-ajax="false" href="/topic/comment?topicId=${id}">${title} (${lastCommentNumber})<\/a><\/li>' );
     	$("#body").live('pageshow', function(){
     		if($("#topicList > li").size() == 0){
                 $.initList( "topicList", "topicItem", true, "/topic/json", null, function(jsonData){
@@ -14,7 +14,6 @@
                 });    		
     		}
     	});
-    	$("#subTitle").text('新着スレッド一覧');
     });
     //]]>
 </script>

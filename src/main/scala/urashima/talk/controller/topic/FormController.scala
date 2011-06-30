@@ -7,6 +7,7 @@ import urashima.talk.service.TopicService
 import org.dotme.liquidtpl.Constants
 import urashima.talk.model.Topic
 import urashima.talk.lib.util.TextUtils
+import javax.servlet.http.HttpServletResponse
 
 class FormController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
@@ -62,10 +63,11 @@ class FormController extends AbstractFormController {
         topic.setTitle(request.getParameter("title"))
         //Content
         topic.setContent(request.getParameter("content"))
-        
+
         topic.setReferenceKey(TextUtils.encode(request.getRemoteAddr))
 
         TopicService.save(topic)
+        response.asInstanceOf[HttpServletResponse].addCookie(TopicService.createCookieUserName(topic.getName))
       }
     } catch {
       case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));

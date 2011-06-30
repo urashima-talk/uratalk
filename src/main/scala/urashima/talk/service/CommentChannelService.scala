@@ -50,6 +50,12 @@ object CommentChannelService {
     "%s@%s".format(cookieUserId, topicNumber)
   }
 
+  def getChannelId(request: ServletRequest, topicNumber: String): String = {
+    val cookieUserId: String = request.getAttribute(AppConstants.KEY_COOKIE_USER_ID).asInstanceOf[String]
+    val topicId: String = request.getParameter(AppConstants.KEY_TOPIC_ID)
+    return getChannelId(cookieUserId, topicNumber)
+  }
+
   def getTokenJson(request: ServletRequest): JsValue = {
     val cookieUserId: String = request.getAttribute(AppConstants.KEY_COOKIE_USER_ID).asInstanceOf[String]
     val topicId: String = request.getParameter(AppConstants.KEY_TOPIC_ID)
@@ -93,9 +99,11 @@ object CommentChannelService {
     channelService.sendMessage(new ChannelMessage(userId, "/*%s*/".format(data.toString)))
   }
 
-  def sendUpdateToUsers(topicNumber: String, data: JsValue) {
+  def sendUpdateToUsers(topicNumber: String, data: JsValue, excludeChannelId: String) {
     getUserList(topicNumber).foreach { userId =>
-      sendUpdateToUser(userId, data)
+      if (excludeChannelId != userId) {
+        sendUpdateToUser(userId, data)
+      }
     }
   }
 
