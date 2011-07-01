@@ -96,6 +96,31 @@ object TopicService {
     Datastore.query(m).sort(m.lastCommentAt.desc).asList.toList
   }
 
+  def fetchAllFavorites(request: ServletRequest): List[Topic] = {
+    val cookies: Array[Cookie] = request.asInstanceOf[HttpServletRequest].getCookies
+    if (cookies == null || cookies.size == 0) {
+      List()
+    } else {
+      cookies.find { cookie: Cookie =>
+        cookie.getName == AppConstants.KEY_COOKIE_FAVORITES
+      } match {
+        case Some(cookie) => {
+          val m: TopicMeta = TopicMeta.get
+          java.net.URLDecoder.decode(cookie.getValue(), Constants.CHARSET).split(",").map { id =>
+            fetchOne(id).getOrElse(null)
+          }.filter { v =>
+            v != null
+          }.sortWith { (x1, x2) =>
+            x1.getLastCommentAt.after(x2.getLastCommentAt)
+          }.toList
+        }
+        case None => {
+          List()
+        }
+      }
+    }
+  }
+
   def createNew(): Topic = {
     val result: Topic = new Topic
     result.setName("")

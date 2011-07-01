@@ -17,8 +17,12 @@ class JsonController extends AbstractJsonDataController {
   override def getList: JsValue = {
     import sjson.json.JsonSerialization._
     import urashima.talk.service.TopicService.TopicProtocol._
-    val startDate: Date = new Date
-    tojson(TopicService.fetchAll())
+    
+    if (request.getParameter(AppConstants.MODE_FAVORITES) == "true") {
+      tojson(TopicService.fetchAllFavorites(request))
+    } else {
+      tojson(TopicService.fetchAll())
+    }
   }
 
   override def getDetail(id: String): JsValue = {

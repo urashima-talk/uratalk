@@ -8,11 +8,14 @@ import org.dotme.liquidtpl.Constants
 import urashima.talk.model.Topic
 import urashima.talk.lib.util.TextUtils
 import javax.servlet.http.HttpServletResponse
+import com.google.appengine.api.datastore.KeyFactory
 
 class FormController extends AbstractFormController {
+  var newId = ""
+  
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
-  override def redirectUri: String = "/index";
+  override def redirectUri: String = "/topic/comment?topicId=%s".format(newId);
 
   override def getTemplateName: String = {
     "form"
@@ -67,6 +70,7 @@ class FormController extends AbstractFormController {
         topic.setReferenceKey(TextUtils.encode(request.getRemoteAddr))
 
         TopicService.save(topic)
+        newId = KeyFactory.keyToString(topic.getKey)
         response.asInstanceOf[HttpServletResponse].addCookie(TopicService.createCookieUserName(topic.getName))
       }
     } catch {

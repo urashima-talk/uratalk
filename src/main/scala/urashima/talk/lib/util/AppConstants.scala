@@ -18,6 +18,8 @@ object AppConstants {
   val KEY_CHANNEL_ID = "channelId"
   val KEY_COOKIE_USER_ID = "cookieUserId"
   val KEY_COOKIE_USER_NAME = "cookieUserName"
+  val KEY_COOKIE_FAVORITES = "favorites"
+  val MODE_FAVORITES = "favorites"
 
   private val DEFAULT_TIME_ZONE: TimeZone = TimeZone.getTimeZone("Asia/Tokyo")
   def timeZone: TimeZone = DEFAULT_TIME_ZONE;

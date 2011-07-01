@@ -9,25 +9,6 @@ object FormControllerSpec extends org.specs.Specification {
 
   val tester = new ControllerTester(classOf[FormController])
   Constants._pathPrefix = "war/"
-  "FormController" should {
-    doBefore { tester.setUp; tester.start("/topic/form") }
-
-    "not null" >> {
-      val controller = tester.getController[FormController]
-      controller mustNotBe null
-    }
-    "not redirect" >> {
-      tester.isRedirect mustBe false
-    }
-    "get destination path is null" >> {
-      tester.getDestinationPath mustBe null
-    }
-
-    doAfter { tester.tearDown }
-
-    "after tearDown" >> {
-      true
-    }
-  }
+  "FormController" should {}
 }
 class FormControllerSpecTest extends JUnit4(FormControllerSpec)

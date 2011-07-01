@@ -1,13 +1,17 @@
 @charset "utf-8";
 
+a.ui-link-inherit {
+	white-space: normal !important;
+}
+
 p.ui-li-desc {
-	white-space: normal;
+	white-space: normal !important;
 }
 
 #mainMenu .ui-btn-inner {
-   padding: 0px;	
+	padding: 0px !important;
 }
 
 #commentList .ui-li {
-   padding: 15px;
+	padding: 15px !important;
 }
