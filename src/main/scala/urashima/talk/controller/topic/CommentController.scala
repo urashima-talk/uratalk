@@ -8,7 +8,7 @@ import urashima.talk.service.TopicService
 import org.dotme.liquidtpl.Constants
 import urashima.talk.model.Topic
 import urashima.talk.model.Comment
-import urashima.talk.lib.util.TextUtils
+import urashima.talk.lib.util.SearchService
 import urashima.talk.service.CommentChannelService
 import javax.servlet.http.HttpServletResponse
 
@@ -66,7 +66,7 @@ class CommentController extends AbstractFormController {
             //Content
             comment.setContent(request.getParameter("content"))
 
-            comment.setReferenceKey(TextUtils.encode(request.getRemoteAddr))
+            comment.setReferenceKey(SearchService.encode(request.getRemoteAddr))
 
             TopicService.saveComment(comment, topic)
             response.asInstanceOf[HttpServletResponse].addCookie(TopicService.createCookieUserName(comment.getName))

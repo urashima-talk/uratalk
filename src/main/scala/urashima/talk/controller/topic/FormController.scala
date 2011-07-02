@@ -6,7 +6,7 @@ import org.dotme.liquidtpl.LanguageUtil
 import urashima.talk.service.TopicService
 import org.dotme.liquidtpl.Constants
 import urashima.talk.model.Topic
-import urashima.talk.lib.util.TextUtils
+import urashima.talk.lib.util.SearchService
 import javax.servlet.http.HttpServletResponse
 import com.google.appengine.api.datastore.KeyFactory
 
@@ -67,7 +67,7 @@ class FormController extends AbstractFormController {
         //Content
         topic.setContent(request.getParameter("content"))
 
-        topic.setReferenceKey(TextUtils.encode(request.getRemoteAddr))
+        topic.setReferenceKey(SearchService.encode(request.getRemoteAddr))
 
         TopicService.save(topic)
         newId = KeyFactory.keyToString(topic.getKey)
