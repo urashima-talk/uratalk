@@ -1,18 +1,18 @@
 <script type="text/javascript">
     //<![CDATA[
-    $(function(){    	
-    	$("#body").live('pageshow', function(){
-    		if($("#topicList > li").size() == 0){
-                $.initList( "topicList", "topicItem", true, "/topic/json", null, function(jsonData){
+    $(function(){
+        $("#body").live('pageshow', function(){
+            if($("#topicList > li").size() == 0){
+                $.initList( "topicList", "topicItem", true, "/topic/json", { "favorites": "true" }, function(jsonData){
                     var values = jsonData.values;
                     var size = values.length;
                     $.setListValues("topicList", "topicItem", true, jsonData);
                     if(size > 0){
                         $("#topicList").listview();
                     }
-                });    		
-    		}
-    	});
+                });         
+            }
+        });
     });
     //]]>
 </script>

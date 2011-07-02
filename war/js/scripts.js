@@ -49,7 +49,7 @@ $(function() {
 				temp = list;
 			}
 			$.cookie('favorites', temp.join(","));
-			$("#favorite_switch_icon").attr("src", "/img/icon/favorites.png");
+			$("#favorite_switch_icon").attr("src", "/img/icon/favorites_on.png");
 			$("#favorite_switch").unbind('click touchend').bind('click touchend', function(){
         		$.favorites.remove(topicId);
 			});
@@ -83,4 +83,5 @@ $(function() {
 			}
 		}
 	};
+	$.template( "topicItem", '<li><a data-ajax="false" href="/topic/comment?topicId=${id}">${title} (${lastCommentNumber}) <span class="alignright small">${lastCommentAt}</span><\/a><\/li>' );
 });

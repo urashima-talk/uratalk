@@ -22,9 +22,16 @@ import sjson.json.{ DefaultProtocol, Format, JsonSerialization }
 import urashima.talk.lib.util.AppConstants
 import urashima.talk.meta.{ CommentMeta, TopicMeta }
 import urashima.talk.model.{ Comment, Topic }
+import org.slim3.memcache.Memcache
+import java.util.logging.Level
 
 object TopicService {
   val logger = Logger.getLogger(TopicService.getClass.getName)
+
+  val MC_KEY_COMMENT_COUNTER = "urashima.talk.service.TopicService#commentCounter_";
+
+  val MC_KEY_TOPIC_LIST = "urashima.talk.service.TopicService#topicList";
+  val MC_KEY_COMMENT_LIST = "urashima.talk.service.TopicService#commentList_";
 
   object TopicProtocol extends DefaultProtocol {
     implicit object TopicFormat extends Format[Topic] {
@@ -93,7 +100,18 @@ object TopicService {
 
   def fetchAll(): List[Topic] = {
     val m: TopicMeta = TopicMeta.get
-    Datastore.query(m).sort(m.lastCommentAt.desc).asList.toList
+    try {
+      val cacheList = Memcache.get(MC_KEY_TOPIC_LIST).asInstanceOf[List[Topic]]
+      if (cacheList == null) {
+        throw new NullPointerException
+      }
+      cacheList
+    } catch {
+      case e =>
+        val list = Datastore.query(m).sort(m.lastCommentAt.desc).asList.toList
+        Memcache.put(MC_KEY_TOPIC_LIST, list)
+        list
+    }
   }
 
   def fetchAllFavorites(request: ServletRequest): List[Topic] = {
@@ -151,14 +169,28 @@ object TopicService {
       model.setLastCommentNumberString("0")
     }
 
-    Datastore.put(model).apply(0)
+    val result: Key = Datastore.put(model).apply(0)
+    // delete list cache
+    try {
+      Memcache.delete(MC_KEY_COMMENT_LIST + model.getNumberString)
+      Memcache.delete(MC_KEY_TOPIC_LIST)
+    }
+    return result
   }
 
   def delete(topic: Topic) {
     QueueFactory.getQueue("default")
       .add(Builder.withUrl("/task/deletecomment")
         .param(Constants.KEY_ID, KeyFactory.keyToString(topic.getKey)))
-    Datastore.delete(topic.getKey)
+
+    val result: Unit = Datastore.delete(topic.getKey)
+
+    // delete list cache
+    try {
+      Memcache.delete(MC_KEY_COMMENT_LIST + topic.getNumberString)
+      Memcache.delete(MC_KEY_TOPIC_LIST)
+    }
+    result
   }
 
   /**
@@ -169,7 +201,18 @@ object TopicService {
     try {
       fetchOne(topicId) match {
         case Some(topic) => {
-          Datastore.query(m).filter(m.topicRef.equal(topic.getKey)).asList.toList
+          try {
+            val cacheList = Memcache.get(MC_KEY_COMMENT_LIST + topic.getNumberString).asInstanceOf[List[Comment]]
+            if (cacheList == null) {
+              throw new NullPointerException
+            }
+            cacheList
+          } catch {
+            case e =>
+              val list = Datastore.query(m).filter(m.topicRef.equal(topic.getKey)).asList.toList
+              Memcache.put(MC_KEY_COMMENT_LIST + topic.getNumberString, list)
+              list
+          }
         }
         case None => null
       }
@@ -212,7 +255,19 @@ object TopicService {
   }
 
   def deleteComment(comment: Comment) {
-    Datastore.delete(comment.getKey)
+    val topic: Topic = comment.getTopicRef.getModel
+    val result: Unit = Datastore.delete(comment.getKey)
+
+    // refresh parent topic index
+    QueueFactory.getDefaultQueue.add(Builder.withUrl("/task/topic/refreshdate")
+      .param(AppConstants.KEY_TOPIC_ID, KeyFactory.keyToString(topic.getKey))
+      .method(Method.POST))
+      
+    // delete list cache
+    try {
+      Memcache.delete(MC_KEY_COMMENT_LIST + topic.getNumberString)
+    }
+    result
   }
 
   def createNewComment(topic: Topic): Comment = {
@@ -233,7 +288,22 @@ object TopicService {
     val now: Date = new Date
     if (key == null) {
       model.setKey(Datastore.createKey(classOf[Comment], ReverseCounterLogService.increment("c")))
-      model.setNumberString(CounterLogService.increment("c_%s".format(topic.getNumberString)).toString)
+
+      //commentNumber
+      val topicNumber: String = topic.getNumberString
+      val newNumber: Long = try {
+        Memcache.increment(MC_KEY_COMMENT_COUNTER + topicNumber, 1).longValue;
+      } catch {
+        case e =>
+          logger.log(Level.WARNING, "Failed to increment on Memcache: ", e);
+          // if failed, restore the value last comment number
+          try {
+            topic.getLastCommentNumberString.toLong + 1
+          } catch {
+            case e => 1
+          }
+      }
+      model.setNumberString(newNumber.toString)
     }
 
     if (model.getCreatedAt == null) {
@@ -242,9 +312,16 @@ object TopicService {
     model.getTopicRef.setModel(topic)
     val result: Key = Datastore.put(model).apply(0)
 
+    // refresh parent topic index
     QueueFactory.getDefaultQueue.add(Builder.withUrl("/task/topic/refreshdate")
       .param(AppConstants.KEY_TOPIC_ID, KeyFactory.keyToString(topic.getKey))
       .method(Method.POST))
+
+    // delete list cache
+    try {
+      Memcache.delete(MC_KEY_COMMENT_LIST + topic.getNumberString)
+    }
+
     result
   }
 

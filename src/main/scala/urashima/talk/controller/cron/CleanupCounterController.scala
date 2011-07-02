@@ -20,7 +20,6 @@ class CleanupcounterController extends Controller {
     CounterLogService.cleanupDatastore("t_all")
     //Todo paginate
     TopicService.fetchAll.foreach { topic =>
-      CounterLogService.cleanupDatastore("c_%s".format(topic.getNumberString))
       CommentChannelService.cleanupDatastore(topic.getNumberString)
     }
     null

@@ -93,15 +93,15 @@ public class NoticeComment implements Serializable {
 		return true;
 	}
 
-	public String getReferenceKey() {
-		return referenceKey;
-	}
-
-	public void setCommentRef(ModelRef<Comment> commentRef) {
-		this.commentRef = commentRef;
-	}
-
 	public ModelRef<Comment> getCommentRef() {
 		return commentRef;
+	}
+
+	public void setReferenceKey(String referenceKey) {
+		this.referenceKey = referenceKey;
+	}
+
+	public String getReferenceKey() {
+		return referenceKey;
 	}
 }

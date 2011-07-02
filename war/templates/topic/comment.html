@@ -1,21 +1,21 @@
-	<script type="text/javascript">
+    <script type="text/javascript">
     //<![CDATA[
     $(function(){
-    	$.toggleCommentForm = function(){
-    		if($("#commentFormContainer").css("display") == "none") {
-    			$("#commentFormContainer").show();
-    			$("#menuAdd").addClass("ui-btn-active");
-    		} else {
-    			$("#commentFormContainer").hide();
-    			$("#menuAdd").removeClass("ui-btn-active");
-    		}
-    		return false;
-    	};
-    	
+        $.toggleCommentForm = function(){
+            if($("#commentFormContainer").css("display") == "none") {
+                $("#commentFormContainer").show();
+                $("#menuAdd").addClass("ui-btn-active");
+            } else {
+                $("#commentFormContainer").hide();
+                $("#menuAdd").removeClass("ui-btn-active");
+            }
+            return false;
+        };
+        
         $("#body").live('pageshow', function(){
-        	$("#menuAdd").attr('href', '#').bind('click touchend', $.toggleCommentForm);
-        	$("#menuAddIcon").attr("src", "/img/icon/comment.png");
-        	
+            $("#menuAdd").attr('href', '#').unbind('click touchend').bind('click touchend', $.toggleCommentForm);
+            $("#menuAddIcon").attr("src", "/img/icon/comment.png");
+            
             $.urlParams = $.getUrlParams();
             $.topicId = $.urlParams['topicId'];
             $.commentForm = {};
@@ -29,13 +29,13 @@
                 values['content'] = $.simpleHTML(values['content']);
                 $("#subTitle").text(values['title']);
                 if($.favorites.isFavorite($.topicId)){
-                	$('<a id="favorite_switch" href="#"><img id="favorite_switch_icon" align="absmiddle" src="/img/icon/favorites.png" height="24" \/><\/a>').bind('click touchend', function(){
+                    $('<a id="favorite_switch" class="ml10" href="#"><img id="favorite_switch_icon" src="/img/icon/favorites_on.png" \/><\/a>').bind('click touchend', function(){
                         $.favorites.remove($.topicId);
-                    }).prependTo("#subTitle");
+                    }).appendTo("#subTitle");
                 } else {
-                	$('<a id="favorite_switch" href="#"><img id="favorite_switch_icon" align="absmiddle" src="/img/icon/favorites_off.png" height="24" \/><\/a>').bind('click touchend', function(){
-                		$.favorites.add($.topicId);
-                	}).prependTo("#subTitle");
+                    $('<a id="favorite_switch" class="ml10" href="#"><img id="favorite_switch_icon" src="/img/icon/favorites_off.png" \/><\/a>').bind('click touchend', function(){
+                        $.favorites.add($.topicId);
+                    }).appendTo("#subTitle");
                 }
                 $("#subTitleContainer").show();
             });  
@@ -49,9 +49,9 @@
                     }
                     $.setListValues("commentList", "commentItem", false, jsonData);
                     if(size > 0){
-                        $("#commentList").listview();
+                    	$("#commentList").listview();
                     } else {
-                    	$.toggleCommentForm();
+                        $.toggleCommentForm();
                     }
                     $.ajax({
                         type : "POST",
@@ -66,19 +66,19 @@
                                 socket = channel.open();
                                 socket.onopen = function(){$.connected = true;};
                                 socket.onmessage = function(message){
-                                	var messageData = $.evalJsonCommentFiltered(message.data);
-                                	console.dir(messageData);
-                                	messageData['content'] = $.simpleHTML(messageData['content']);
-                                	var newLine = $("#commentItem").tmpl(messageData).hide();
-                                	newLine.prependTo("#commentList");
-                                	$("#commentList").listview("refresh");
-                                	newLine.slideDown();
+                                    var messageData = $.evalJsonCommentFiltered(message.data);
+                                    console.dir(messageData);
+                                    messageData['content'] = $.simpleHTML(messageData['content']);
+                                    var newLine = $("#commentItem").tmpl(messageData).hide();
+                                    newLine.prependTo("#commentList");
+                                    $("#commentList").listview("refresh");
+                                    newLine.slideDown();
                                 };
                                 socket.onerror = function(error){
-                                	//console.dir(error)
+                                    //console.dir(error)
                                 };
                                 socket.onclose = function(){$.connected = false;};
-                            	
+                                
                             }
                         }, 
                         error : function(){
@@ -89,31 +89,34 @@
             }
         });
     });
-    //]]>		
-	</script>
-		<div id="commentFormContainer" style="display:none;">
-			<form data-ajax="false" action="/topic/comment" id="commentForm"
-				style="display: none;">
-				<input type="hidden" id="topicIdField" name="topicId" />
-				<div class="ma5">
-					<div id="nameError" class="warningMessageOne" style="display: none;" />
-					<label for="nameField" class="bold"><liquidtpl:text key="topic.name" /></label> 
-					<input id="nameField" name="name" />
-				</div>
-				<div class="ma5">
-					<div id="contentError" class="warningMessageOne" style="display: none;" />
-					<label for="contentField" class="bold"><liquidtpl:text key="topic.comment" /></label>
-					<textarea cols="40" rows="8" id="contentField" name="content"></textarea>
-				</div>
-				<input type="submit" value="送信" data-theme="a" />&nbsp;
-			</form>
-		</div>
-		<ul id="commentList" class="listTable" style="display: none;" data-theme="a">
-		</ul>&nbsp;
-		<script id="commentItem" type="text/x-jquery-tmpl">
+    //]]>       
+    </script>
+        <div id="subTitleContainer" class="mb10" style="display:none;"><strong id="subTitle"></strong></div>
+        <div id="commentFormContainer" style="display:none;">
+            <hr/>
+            <form data-ajax="false" action="/topic/comment" id="commentForm"
+                style="display: none;">
+                <input type="hidden" id="topicIdField" name="topicId" />
+                <div class="ma5">
+                    <div id="nameError" class="warningMessageOne" style="display: none;" />
+                    <label for="nameField" class="bold"><liquidtpl:text key="topic.name" /></label> 
+                    <input id="nameField" name="name" />
+                </div>
+                <div class="ma5">
+                    <div id="contentError" class="warningMessageOne" style="display: none;" />
+                    <label for="contentField" class="bold"><liquidtpl:text key="topic.comment" /></label>
+                    <textarea placeholder="コメントを入力してください" cols="40" rows="8" id="contentField" name="content"></textarea>
+                </div>
+                <input type="submit" value="送信" />&nbsp;
+            </form>
+        </div>&nbsp;
+        <ul id="commentList" style="display: none;">
+        </ul>
+        <script id="commentItem" type="text/x-jquery-tmpl">
           <li>
-          <h5>${number} ${name} さん</h5>
-          <div>{{html content}}</div>
-          <p class="alignright small">${createdAt}</p>&nbsp;
+          <strong>${number}.&nbsp;&nbsp;${name}&nbsp;さん</strong><span class="alignright small">${createdAt}</span>
+          <div class="">
+            {{html content}}
+          </div>
           </li>
        </script>
