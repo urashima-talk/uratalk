@@ -9,16 +9,26 @@ import urashima.talk.model.Topic
 import urashima.talk.lib.util.TextUtils
 import javax.servlet.http.HttpServletResponse
 import com.google.appengine.api.datastore.KeyFactory
+import java.io.File
+import scala.xml._
 
 class FormController extends AbstractFormController {
   var newId = ""
-  
+
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
   override def redirectUri: String = "/topic/comment?topicId=%s".format(newId);
 
   override def getTemplateName: String = {
     "form"
+  }
+
+  override def getOuterTemplateName: String = {
+    val buf: StringBuilder = new StringBuilder
+    buf.append("outer")
+      .append(File.separator)
+      .append("dialog")
+      .toString
   }
 
   override def validate: Boolean = {
@@ -77,5 +87,10 @@ class FormController extends AbstractFormController {
       case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
     }
     !existsError
+  }
+
+  override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
+    val topicId = request.getParameter(AppConstants.KEY_TOPIC_ID)
+    super.replacerMap + ("dialogTitle" -> { e => Text("%s %s".format(LanguageUtil.get("topic"), LanguageUtil.get("add"))) })
   }
 }

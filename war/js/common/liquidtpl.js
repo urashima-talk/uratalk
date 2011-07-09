@@ -18,8 +18,11 @@ $.evalJsonCommentFiltered = function(value) {
 		if (startIndex == -1 || endIndex == -1) {
 			throw new Error("JSON was not comment filtered");
 		}
-		return value.substring(startIndex + 2, endIndex).replace(/\r\n/g, "\n")
+		var data = value.substring(startIndex + 2, endIndex)
+		        .replace(/[\r]/g, "")
+		        .replace(/\r\n/g, "\n")
 				.replace(/[\r\n]/g, "\\n").replace(/[\t]/g, "\\t");
+		return data;
 	};
 	return $.secureEvalJSON(uncommentJsonString(value));
 };
@@ -59,11 +62,12 @@ $.escapeHTML = function(value) {
 $.simpleHTML = function(value) {
 	var html = "";
 	var re = /((http|https|ftp):\/\/[\w?=&.\/-;#~%-]+(?![\w\s?&.\/;#~%"=-]*>))/g;
-	var lines = $.escapeHTML(value).replace(re, '<a target="_blank" class="ui-link" href="$1">$1<\/a>').split(/\r|\n|\r\n/);
+	var lines = $.escapeHTML(value).replace(re, '<a target="_blank" href="$1">$1<\/a>').split(/\r|\n|\r\n/);
 	var size = lines.length;
-	for ( var i = 0; i < size; i += 2) {
+	for ( var i = 0; i < size; i++) {
+		html += "<p>"
 		html += lines[i];
-		html += "<br\/>"
+		html += "<\/p>"
 	}
 	return html;
 };
@@ -111,7 +115,11 @@ $.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback) {
 			var values = jsonData.values;
 			if (values && values["redirect"]) {
 				$("#" + listId).empty();
-				location.href = values["redirect"];
+				if($.mobile && $.mobile.changePage){
+            		$.mobile.changePage( values["redirect"], { transition: "slideup"} ); 
+            	} else {
+            		location.href = values["redirect"];
+            	}
 				return;
 			}
 
@@ -181,7 +189,11 @@ $.initForm = function(formId, url, params, callback) {
 			var values = jsonData.values;
 			if (values && values["redirect"]) {
 				$("#" + formId).empty();
-				location.href = values["redirect"];
+				if($.mobile && $.mobile.changePage){
+            		$.mobile.changePage( values["redirect"], { transition: "slideup"} ); 
+            	} else {
+            		location.href = values["redirect"];
+            	}
 				return;
 			}
 			if (jsonData["result"] == "success") {
@@ -210,7 +222,7 @@ $.initForm = function(formId, url, params, callback) {
 	});
 };
 
-$.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess) {
+$.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess, afterSubmit) {
 	var values = jsonData.values;
 	var keys = {};
 	var sourceValues = values;
@@ -288,18 +300,17 @@ $.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess) {
 		if (beforeSubmit) {
 			beforeSubmit();
 		}
-		$.submit(formId, afterSuccess);
+		$.submit(formId, afterSuccess, afterSubmit);
 		return false;
 	});
 };
 
-$.submit = function(formId, afterSuccess) {
+$.submit = function(formId, afterSuccess, afterSubmit) {
 	$(".warningMessage").hide();
 	$(".warningMessageOne").hide();
 	$("#" + formId).find("input[type='submit']").attr('disabled', 'disabled');
 
-	$
-			.ajax({
+	$.ajax({
 				type : "POST",
 				url : $("#" + formId).attr('action'),
 				cache : false,
@@ -313,7 +324,15 @@ $.submit = function(formId, afterSuccess) {
 								afterSuccess();
 							}
 							if (jsonData["redirect"]) {
-								location.href = jsonData["redirect"];
+								if(jsonData["redirect"] == "reload"){
+									location.reload();
+								} else {
+									if($.mobile && $.mobile.changePage){
+					            		$.mobile.changePage( jsonData["redirect"], { transition: "slideup"} ); 
+					            	} else {
+					            		location.href = jsonData["redirect"];
+					            	}  
+								}
 							}
 						} else {
 							var error = "Unknown Error";
@@ -335,6 +354,9 @@ $.submit = function(formId, afterSuccess) {
 					}
 					$("#" + formId).find("input[type='submit']").removeAttr(
 							'disabled');
+					if (afterSubmit) {
+						afterSubmit();
+					}
 				},
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
 					var error = "Request Error: " + errorThrown + ". " + url;
@@ -342,6 +364,9 @@ $.submit = function(formId, afterSuccess) {
 							error + "\n" + result).slideDown("fast");
 					$("#" + formId).find("input[type='submit']").removeAttr(
 							'disabled');
+					if (afterSubmit) {
+						afterSubmit();
+					}
 				}
 			});
 }
@@ -366,7 +391,11 @@ $.initDetail = function(detailId, itemTplId, url, params, callback) {
 			var values = jsonData.values;
 			if (values && values["redirect"]) {
 				$("#" + detailId).empty();
-				location.href = values["redirect"];
+				if($.mobile && $.mobile.changePage){
+            		$.mobile.changePage( values["redirect"], { transition: "slideup"} ); 
+            	} else {
+            		location.href = values["redirect"];
+            	}
 				return;
 			}
 
@@ -412,9 +441,5 @@ $.setDetailValues = function(detailId, itemTplId, jsonData) {
 
 $.template("optionsTemplate", '<option value="${key}">${value}<\/option>');
 
-$
-		.template(
-				"idHiddenTemplate",
-				'{{if id}}<input name="id" id="idField" type="hidden" value="${id}" \/>{{/if}}<input name="mode" type="hidden" value="submit" \/>');
-$.template("submitTemplate",
-		'<input id="submit" type="submit" value="${submit}" \/>');
+$.template("idHiddenTemplate", '{{if id}}<input name="id" id="idField" type="hidden" value="${id}" \/>{{/if}}<input name="mode" type="hidden" value="submit" \/>');
+$.template("submitTemplate", '<input id="submit" type="submit" value="${submit}" \/>');

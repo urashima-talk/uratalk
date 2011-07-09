@@ -4,8 +4,9 @@ import java.security.Key
 import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Base64;
+import javax.crypto.spec.SecretKeySpec
+import org.apache.commons.codec.binary.Base64
+import scala.xml.{ NodeSeq, XML, Text }
 
 object TextUtils {
 
@@ -13,7 +14,7 @@ object TextUtils {
     val bytes = encodeBytes(data.getBytes, makeKey(AppConstants.COMMON_KEY))
     Base64.encodeBase64String(bytes)
   }
-  
+
   def decode(data: String): String = {
     val bytes = decodeBytes(Base64.decodeBase64(data), makeKey(AppConstants.COMMON_KEY))
     new String(bytes)
@@ -36,7 +37,7 @@ object TextUtils {
       cipher.init(Cipher.ENCRYPT_MODE, skey);
       return cipher.doFinal(src);
     } catch {
-      case e:Exception => e.printStackTrace 
+      case e: Exception => e.printStackTrace
     }
     return Array[Byte]()
   }
@@ -50,8 +51,23 @@ object TextUtils {
       cipher.init(Cipher.DECRYPT_MODE, skey);
       return cipher.doFinal(src);
     } catch {
-      case e:Exception => e.printStackTrace 
+      case e: Exception => e.printStackTrace
     }
     return Array[Byte]()
+  }
+
+  def textToHtml(text: String): NodeSeq = {
+    text.replaceAll("\r\n", "\n").split("\r|\n|\r\n").flatMap { line =>
+      <p>{ autoLink(line) }</p>
+    }.toSeq
+  }
+
+  def autoLink(text: String): NodeSeq = {
+    val URLPATTERN = "((http|https|ftp):\\/\\/[\\w?=&.\\/-;#~%-]+(?![\\w\\s?&.\\/;#~%\"=-]*>))".r
+    URLPATTERN.findFirstMatchIn(text) match {
+      case None => Text(text)
+      case Some(m) =>
+        <xml:group>{ Text(m.before.toString) }<a target="_blank" class="ui-link" href={ m.matched.toString }>{ m.matched.toString }</a>{ autoLink(m.after.toString) }</xml:group>
+    }
   }
 }

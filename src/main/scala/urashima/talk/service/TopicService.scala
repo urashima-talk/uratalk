@@ -22,8 +22,11 @@ import sjson.json.{ DefaultProtocol, Format, JsonSerialization }
 import urashima.talk.lib.util.AppConstants
 import urashima.talk.meta.{ CommentMeta, TopicMeta }
 import urashima.talk.model.{ Comment, Topic }
+import urashima.talk.lib.util.TextUtils
 import org.slim3.memcache.Memcache
 import java.util.logging.Level
+import scala.xml.{ NodeSeq, Text }
+import org.dotme.liquidtpl.helper.BasicHelper
 
 object TopicService {
   val logger = Logger.getLogger(TopicService.getClass.getName)
@@ -348,5 +351,81 @@ object TopicService {
       }
     }
   }
+
+  /*
+   * NodeHelper
+   */
+  
+  
+  def getTopicItemTemplate(topic: Topic): NodeSeq = {
+    val (topicId: String,
+      title: String,
+      lastCommentNumber: String,
+      lastCommentAt: String) =
+      try {
+        (KeyFactory.keyToString(topic.getKey),
+          topic.getTitle,
+          topic.getLastCommentNumberString: String,
+          AppConstants.dateTimeFormat.format(topic.getLastCommentAt))
+      } catch {
+        case e =>
+          ("${id}",
+            "${title}",
+            "${lastCommentNumber}",
+            "${lastCommentAt}")
+      }
+    <li>
+      <a href={ "/topic/comment?topicId=%s".format(topicId) }>
+        { "%s (%s)".format(title, lastCommentNumber) }
+        <span class="alignright small">
+          { lastCommentAt }
+        </span>
+      </a>
+    </li>
+  }
+  
+  def getTopicJson(topicId: String): NodeSeq =
+    {
+      import sjson.json.JsonSerialization._
+      import urashima.talk.service.TopicService.TopicProtocol._
+      try {
+        val topic: Topic = TopicService.fetchOne(topicId) match {
+          case Some(v) => v
+          case None => TopicService.createNew
+        } 
+        BasicHelper.JsonTag("topic", tojson(topic))
+      } catch {
+        case e => Text("")
+      }
+    }
+
+  def getCommentItemTemplate(comment: Comment): NodeSeq = {
+    val (commentId: String,
+      number: String,
+      name: String,
+      contentHtml: NodeSeq,
+      createdAt: String) =
+      try {
+        (KeyFactory.keyToString(comment.getKey),
+          comment.getNumberString,
+          comment.getName,
+          TextUtils.textToHtml(comment.getContent),
+          AppConstants.dateTimeFormat.format(comment.getCreatedAt))
+      } catch {
+        case e =>
+          ("${id}",
+            "${number}",
+            "${name}",
+            Text("{{html content}}"),
+            "${createdAt}")
+      }
+    <li>
+      <strong>{ number }.&nbsp;&nbsp;{ name }&nbsp;さん</strong><span class="alignright small">{ createdAt }</span>
+      <div class="">
+        { contentHtml }
+      </div>
+    </li>
+  }
+
 
 }

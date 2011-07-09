@@ -1,22 +1,21 @@
 package urashima.talk.controller.topic
 
-import org.dotme.liquidtpl.controller.AbstractFormController
 import java.util.logging.Logger
-import urashima.talk.lib.util.AppConstants
-import org.dotme.liquidtpl.LanguageUtil
-import urashima.talk.service.TopicService
-import org.dotme.liquidtpl.Constants
-import urashima.talk.model.Topic
-import urashima.talk.model.Comment
-import urashima.talk.lib.util.TextUtils
-import urashima.talk.service.CommentChannelService
 import javax.servlet.http.HttpServletResponse
+import org.dotme.liquidtpl.controller.AbstractFormController
+import org.dotme.liquidtpl.{ Constants, LanguageUtil }
+import scala.collection.mutable.MapBuilder
+import scala.xml._
+import urashima.talk.lib.util.{ AppConstants, TextUtils }
+import urashima.talk.model.{ Comment, Topic }
+import urashima.talk.service.{ CommentChannelService, TopicService }
+import javax.servlet.http.HttpServletRequest
 
 class CommentController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
   override def redirectUri: String = {
-    "/topic/comment?%s=%s".format(AppConstants.KEY_TOPIC_ID, request.getParameter(AppConstants.KEY_TOPIC_ID));
+    "reload";
   }
 
   override def getTemplateName: String = {
@@ -86,5 +85,27 @@ class CommentController extends AbstractFormController {
       case e: Exception => addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.systemError"));
     }
     !existsError
+  }
+
+  override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
+    val topicId = request.getParameter(AppConstants.KEY_TOPIC_ID)
+    val list = TopicService.fetchCommentList(topicId)
+    val isItem: Boolean = (list != null) && (list.size > 0)
+    super.replacerMap + ("commentList" -> { e =>
+      if (isItem) {
+        <ul id={ "commentList_%s".format(topicId) } data-role="listview">{
+          list.flatMap { comment =>
+            TopicService.getCommentItemTemplate(comment)
+          }
+        }</ul>
+      } else {
+        Text("")
+      }
+    },
+      "commentFormContainer" -> { e => <div id={ "commentFormContainer_%s".format(topicId) } style={"display:%s;".format(if(isItem) "none" else "block")}></div> },
+      "commentItemTemplate" -> { e => TopicService.getCommentItemTemplate(null) }, "menuAdd" ->
+      { e => <a class={ "center menuAdd_%s".format(topicId) } href="#" onclick={"$.toggleCommentForm('%s');return false;".format(topicId)}><img id="menuAddIcon" src="/img/icon/comment.png" alt={ "%s %s".format(LanguageUtil.get("topic.comment"), LanguageUtil.get("add")) } height="16" style="margin:0px;"/></a> },
+      "subTitle" -> { e => <strong id={ "subTitle_%s".format(topicId) }></strong> },
+      "topicJson" -> { e => TopicService.getTopicJson(topicId) })
   }
 }

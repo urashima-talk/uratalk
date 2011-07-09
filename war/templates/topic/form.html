@@ -3,7 +3,9 @@
 
         $(function(){
             $.topicForm = {};
-            $.initForm("topicForm", "/topic/json", null);
+            $.initForm("topicForm", "/topic/json", null, function(jsonData){
+              $.setFormValues("topicForm", jsonData, $.mobile.showPageLoadingMsg, null, $.mobile.hidePageLoadingMsg);
+            });
         });
         //]]>
     </script>

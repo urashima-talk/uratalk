@@ -1,7 +1,7 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function(){    	
-    	$("#body").live('pageshow', function(){
+    	$.reloadList = function(){
     		if($("#topicList > li").size() == 0){
                 $.initList( "topicList", "topicItem", true, "/topic/json", null, function(jsonData){
                     var values = jsonData.values;
@@ -12,9 +12,13 @@
                     }
                 });    		
     		}
-    	});
+    	};
     });
     //]]>
 </script>
-<ul id="topicList" class="listTable" style="display: none;">
+<ul id="topicList" data-role="listview">
+<liquidtpl:topicList/>
 </ul>&nbsp;
+<script id="topicItem" type="text/x-jquery-tmpl">
+<liquidtpl:topicItemTemplate/>
+</script>

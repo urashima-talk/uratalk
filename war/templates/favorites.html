@@ -2,19 +2,27 @@
     //<![CDATA[
     $(function(){
         $("#body").live('pageshow', function(){
-            if($("#topicList > li").size() == 0){
-                $.initList( "topicList", "topicItem", true, "/topic/json", { "favorites": "true" }, function(jsonData){
+            if($("#favoriteList > li").size() == 0){
+                $.initList( "favoriteList", "topicItem", true, "/topic/json", { "favorites": "true" }, function(jsonData){
                     var values = jsonData.values;
                     var size = values.length;
-                    $.setListValues("topicList", "topicItem", true, jsonData);
+                    $.setListValues("favoriteList", "topicItem", true, jsonData);
                     if(size > 0){
-                        $("#topicList").listview();
+                        $("#favoriteList").listview("refresh");
                     }
                 });         
+            }
+            if($.favorites.reload == true){
+            	$.favorites.reload = false;
+            	location.reload();
             }
         });
     });
     //]]>
 </script>
-<ul id="topicList" class="listTable" style="display: none;">
+<ul id="favoriteList" data-role="listview">
+<liquidtpl:favoriteList/>
 </ul>&nbsp;
+<script id="topicItem" type="text/x-jquery-tmpl">
+<liquidtpl:topicItemTemplate/>
+</script>
