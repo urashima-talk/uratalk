@@ -47,7 +47,6 @@ $(function() {
       $("#favorite_switch_" + topicId).unbind('click touchend').bind('click touchend', function(){
             $.favorites.remove(topicId);
       });
-      $("#favoriteList").hide();
       this.reload = true;
     },
     remove : function(topicId) {
@@ -69,7 +68,6 @@ $(function() {
       $("#favorite_switch_" + topicId).unbind('click touchend').bind('click touchend', function(){
             $.favorites.add(topicId);
       });
-      $("#favoriteList").hide();
       this.reload = true;
     },
     isFavorite : function(topicId) {
