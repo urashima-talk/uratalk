@@ -23,6 +23,7 @@ import java.util.UUID
 import urashima.talk.lib.util.AppConstants
 
 class CookieFilter extends Filter {
+  val COOKIE_MAX_AGE = 86400 * 7
   @throws(classOf[ServletException])
   override def init(config: FilterConfig): Unit = {
   }
@@ -42,6 +43,7 @@ class CookieFilter extends Filter {
         cookie.getName == AppConstants.KEY_COOKIE_USER_ID
       } match {
         case Some(cookie) => {
+          putCookie(cookie, response)
           cookie.getValue
         }
         case None => {
@@ -56,8 +58,13 @@ class CookieFilter extends Filter {
   def createCookieUserId(request: ServletRequest, response: ServletResponse): String = {
     val uid: String = UUID.randomUUID().toString()
     val newCookie: Cookie = new Cookie(AppConstants.KEY_COOKIE_USER_ID, uid)
-    newCookie.setPath("/")
-    response.asInstanceOf[HttpServletResponse].addCookie(newCookie)
+    putCookie(newCookie, response)
     uid
+  }
+
+  def putCookie(cookie: Cookie, response: ServletResponse): Unit = {
+    cookie.setPath("/")
+    cookie.setMaxAge(COOKIE_MAX_AGE);
+    response.asInstanceOf[HttpServletResponse].addCookie(cookie);
   }
 }

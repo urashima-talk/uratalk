@@ -12,8 +12,43 @@
             return false;
         };
         
+        $.addReplyListener = function(commentNumber, topicId){
+            $('.reply_' + commentNumber + '-' + topicId).live('click touchend', function(){
+            	$.replyForm(commentNumber, topicId);
+                return false;
+            });
+        }
+        
+        $.replyForm = function(commentNumber, topicId){
+        	var text = $("#commentFormContainer_" + topicId + " #contentField").val();
+        	var headText = ">>" + commentNumber + " "; 
+        	if(text.indexOf(headText) != 0){
+        		$("#commentFormContainer_" + topicId + " #contentField").val(headText + text);
+        	}
+        	if($("#commentFormContainer_" + topicId).css("display") == "none") {
+        		$.toggleCommentForm(topicId);
+        	}
+        	$("#commentFormContainer_" + topicId + " #contentField").focus();
+            $('html,body').animate({ scrollTop: 0 }, 'fast');
+            
+            var elm = $("#commentFormContainer_" + topicId + " #contentField").get(0);
+            if (elm.createTextRange) {
+                var range = elm.createTextRange();
+                range.move('character', elm.value.length);
+            	range.select();
+             } else if (elm.setSelectionRange) {
+                elm.setSelectionRange(elm.value.length, elm.value.length);
+             }
+        }
+        
         $("#body").live('pageshow', function(){
           if(!$.loaded[topic.id]){
+        	//add
+        	$('.menuAdd_' + topic.id).live('click touchend', function(){
+        		$.toggleCommentForm(topic.id);return false;
+              return false;
+            });
+        	  
             //title
             $("#subTitle_" + topic.id).text(topic.title);
             

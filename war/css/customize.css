@@ -9,9 +9,13 @@ p.ui-li-desc {
 }
 
 #mainMenu .ui-btn-inner {
-	padding: 5px !important;
+	padding: 10px !important;
 }
 
-#commentList .ui-li {
+ul.commentList li.ui-li {
 	padding: 15px !important;
+}
+
+ul.topicList a.ui-link-inherit {
+    padding: .7em 35px .7em 15px !important;
 }

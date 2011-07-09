@@ -400,28 +400,36 @@ object TopicService {
     }
 
   def getCommentItemTemplate(comment: Comment): NodeSeq = {
-    val (commentId: String,
+    val (
+      topicId: String,
+      commentId: String,
       number: String,
       name: String,
       contentHtml: NodeSeq,
       createdAt: String) =
       try {
-        (KeyFactory.keyToString(comment.getKey),
+        (KeyFactory.keyToString(comment.getTopicRef.getKey),
+          KeyFactory.keyToString(comment.getKey),
           comment.getNumberString,
           comment.getName,
           TextUtils.textToHtml(comment.getContent),
           AppConstants.dateTimeFormat.format(comment.getCreatedAt))
       } catch {
         case e =>
-          ("${id}",
+          ( 
+            "${topicId}",
+            "${id}",
             "${number}",
             "${name}",
             Text("{{html content}}"),
             "${createdAt}")
       }
     <li>
-      <strong>{ number }.&nbsp;&nbsp;{ name }&nbsp;さん</strong><span class="alignright small">{ createdAt }</span>
-      <div class="">
+      <strong>{ number }.&nbsp;&nbsp;{ name }&nbsp;さん</strong>
+      <span class="alignright small">
+        <a class={"reply_%s-%s".format(number, topicId)}><img class="mr10" style="vertical-align: bottom;" height="16px" src="/img/icon/reply.png" onload={"$.addReplyListener('%s', '%s');".format(number, topicId)}/></a>{ createdAt }
+      </span>
+      <div class="mt5">
         { contentHtml }
       </div>
     </li>

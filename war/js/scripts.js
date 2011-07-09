@@ -30,6 +30,9 @@ $(function() {
       var cookieValue = $.cookie('favorites');
       if (cookieValue == null) {
         return null;
+      } else {
+    	  $.cookie('favorites', cookieValue, null);
+    	  $.cookie('favorites', cookieValue, { expires: 7, path: '/' });
       }
       return cookieValue.split(",");
     },
@@ -42,7 +45,7 @@ $(function() {
         list.push(topicId);
         temp = list;
       }
-      $.cookie('favorites', temp.join(","));
+      $.cookie('favorites', temp.join(","), { expires: 7, path: '/' });
       $("#favorite_switch_icon_" + topicId).attr("src", "/img/icon/favorites_on.png");
       $("#favorite_switch_" + topicId).unbind('click touchend').bind('click touchend', function(){
             $.favorites.remove(topicId);
@@ -60,7 +63,7 @@ $(function() {
             temp.push(item);
           }
         }
-        $.cookie('favorites', temp.join(","));
+        $.cookie('favorites', temp.join(","), { expires: 7, path: '/' });
       } else {
         $.cookie('favorites', null);
       }

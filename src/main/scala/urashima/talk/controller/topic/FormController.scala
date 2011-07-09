@@ -91,6 +91,6 @@ class FormController extends AbstractFormController {
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     val topicId = request.getParameter(AppConstants.KEY_TOPIC_ID)
-    super.replacerMap + ("dialogTitle" -> { e => Text("%s %s".format(LanguageUtil.get("topic"), LanguageUtil.get("add"))) })
+    super.replacerMap + ("dialogTitle" -> { e => Text("%s".format(LanguageUtil.get("add"))) })
   }
 }

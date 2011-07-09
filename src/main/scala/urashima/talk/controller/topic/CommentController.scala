@@ -93,7 +93,7 @@ class CommentController extends AbstractFormController {
     val isItem: Boolean = (list != null) && (list.size > 0)
     super.replacerMap + ("commentList" -> { e =>
       if (isItem) {
-        <ul id={ "commentList_%s".format(topicId) } data-role="listview">{
+        <ul id={ "commentList_%s".format(topicId) } class="commentList" data-role="listview">{
           list.flatMap { comment =>
             TopicService.getCommentItemTemplate(comment)
           }
@@ -104,7 +104,7 @@ class CommentController extends AbstractFormController {
     },
       "commentFormContainer" -> { e => <div id={ "commentFormContainer_%s".format(topicId) } style={"display:%s;".format(if(isItem) "none" else "block")}></div> },
       "commentItemTemplate" -> { e => TopicService.getCommentItemTemplate(null) }, "menuAdd" ->
-      { e => <a class={ "center menuAdd_%s".format(topicId) } href="#" onclick={"$.toggleCommentForm('%s');return false;".format(topicId)}><img id="menuAddIcon" src="/img/icon/comment.png" alt={ "%s %s".format(LanguageUtil.get("topic.comment"), LanguageUtil.get("add")) } height="16" style="margin:0px;"/></a> },
+      { e => <a class={ "center menuAdd_%s".format(topicId) } href="#"><img id="menuAddIcon" src="/img/icon/comment.png" alt={ "%s %s".format(LanguageUtil.get("topic.comment"), LanguageUtil.get("add")) } height="16" style="margin:0px;"/></a> },
       "subTitle" -> { e => <strong id={ "subTitle_%s".format(topicId) }></strong> },
       "topicJson" -> { e => TopicService.getTopicJson(topicId) })
   }
