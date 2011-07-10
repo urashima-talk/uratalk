@@ -2,82 +2,90 @@
     <script type="text/javascript">
     //<![CDATA[
     $(function(){
-    	$.loaded = [];
+        $.loaded = [];
         $.toggleCommentForm = function(topicId){
             if($("#commentFormContainer_" + topicId).css("display") == "none") {
                 $("#commentFormContainer_" + topicId).show();
+                $.focusCommentForm(topicId);
             } else {
                 $("#commentFormContainer_" + topicId).hide();
             }
             return false;
         };
         
+        $.focusCommentForm = function(topicId){
+            $.scrollTo("#commentFormContainer_" + topicId, 200, {offset: {top:-10}});
+            var elm = $("#commentFormContainer_" + topicId + " #contentField").get(0);
+            if (elm.createTextRange) {
+                var range = elm.createTextRange();
+                range.move('character', elm.value.length);
+                range.select();
+             } else if (elm.setSelectionRange) {
+                elm.setSelectionRange(elm.value.length, elm.value.length);
+             }
+        };
+        
         $.addReplyListener = function(commentNumber, topicId){
             $('.reply_' + commentNumber + '-' + topicId).live('click touchend', function(){
-            	$.replyForm(commentNumber, topicId);
+                $.replyForm(commentNumber, topicId);
                 return false;
             });
         }
         
         $.replyForm = function(commentNumber, topicId){
-        	var text = $("#commentFormContainer_" + topicId + " #contentField").val();
-        	var headText = ">>" + commentNumber + " "; 
-        	if(text.indexOf(headText) != 0){
-        		$("#commentFormContainer_" + topicId + " #contentField").val(headText + text);
-        	}
-        	if($("#commentFormContainer_" + topicId).css("display") == "none") {
-        		$.toggleCommentForm(topicId);
-        	}
-        	$("#commentFormContainer_" + topicId + " #contentField").focus();
-            $('html,body').animate({ scrollTop: 0 }, 'fast');
+            var text = $("#commentFormContainer_" + topicId + " #contentField").val();
+            var headText = ">>" + commentNumber + " "; 
+            if(text.indexOf(headText) != 0){
+                $("#commentFormContainer_" + topicId + " #contentField").val(headText + text);
+            }
+            if($("#commentFormContainer_" + topicId).css("display") == "none") {
+                $.toggleCommentForm(topicId);
+            } else  {
+                $.focusCommentForm(topicId);
+            }
             
-            var elm = $("#commentFormContainer_" + topicId + " #contentField").get(0);
-            if (elm.createTextRange) {
-                var range = elm.createTextRange();
-                range.move('character', elm.value.length);
-            	range.select();
-             } else if (elm.setSelectionRange) {
-                elm.setSelectionRange(elm.value.length, elm.value.length);
-             }
         }
         
         $("#body").live('pageshow', function(){
           if(!$.loaded[topic.id]){
-        	//add
-        	$('.menuAdd_' + topic.id).live('click touchend', function(){
-        		$.toggleCommentForm(topic.id);return false;
+            //add
+            $('.menuAdd_' + topic.id).live('click touchend', function(){
+                $.toggleCommentForm(topic.id);return false;
               return false;
             });
-        	  
+              
             //title
-            $("#subTitle_" + topic.id).text(topic.title);
+            $("#topicTitle_" + topic.id).text(topic.title);
+            if((topic.contentHtml) && (topic.contentHtml.length > 0)){
+              $("#topicContent_" + topic.id).html($.unescapeHTML(topic.contentHtml)).show();
+            }
             
             if($.favorites.isFavorite(topic.id)){
                 $('<a id="favorite_switch_' + topic.id + '" class="ml10" href="#"><img id="favorite_switch_icon_' + topic.id + '" src="/img/icon/favorites_on.png" \/><\/a>').bind('click touchend', function(){
                     $.favorites.remove(topic.id);
-                }).appendTo("#subTitle_" + topic.id);
+                }).appendTo("#topicTitle_" + topic.id);
             } else {
                 $('<a id="favorite_switch_' + topic.id + '" class="ml10" href="#"><img id="favorite_switch_icon_' + topic.id + '" src="/img/icon/favorites_off.png" \/><\/a>').bind('click touchend', function(){
                     $.favorites.add(topic.id);
-                }).appendTo("#subTitle_" + topic.id);
+                }).appendTo("#topicTitle_" + topic.id);
             }
             
             var commentFormId = "commentForm_" + topic.id;
             $("#commentFormContainer_" + topic.id).html($("#commentFormContainer").html());
             $("#commentFormContainer_" + topic.id + " > form").attr("id", commentFormId);
             $.initForm(commentFormId, "/topic/commentjson", {"topicId": topic.id}, function(jsonData){
-            	$("#" + commentFormId + ' #contentField').keydown(function (e) {
-            		  if (e.metaKey && e.keyCode == 13) {
-            			  $("#" + commentFormId).submit();
-            		  }
-            	});
-            	$.setFormValues(commentFormId, jsonData, $.mobile.showPageLoadingMsg, null, $.mobile.hidePageLoadingMsg);
+                $("#" + commentFormId + ' #contentField').keydown(function (e) {
+                      if (e.metaKey && e.keyCode == 13) {
+                          $("#" + commentFormId).submit();
+                      }
+                });
+                $.setFormValues(commentFormId, jsonData, $.mobile.showPageLoadingMsg, null, $.mobile.hidePageLoadingMsg);
             });
             
             //channelapi
             $.connected = false;
             if($.socket == null){
-            	$.socket = [];
+                $.socket = [];
             }
             if(!$.socket[topic.id]){
                 $.ajax({
@@ -94,12 +102,11 @@
                             $.socket[topic.id].onopen = function(){$.connected = true;};
                             $.socket[topic.id].onmessage = function(message){
                                 var messageData = $.evalJsonCommentFiltered(message.data);
-                                var rawContent = messageData['content'];
-                                messageData['content'] = $.simpleHTML(messageData['content']);
                                 var msgTopicId = messageData['topicId'];
                                 if(msgTopicId == topic.id){
-                                	$.showNotification("/favicon.png", messageData['name'], rawContent);
-                                	var newLine = $("#commentItem").tmpl(messageData).hide();
+                                    $.showNotification("/favicon.png", messageData['name'], messageData['content']);
+                                    messageData['contentHtml'] = $.unescapeHTML(messageData['contentHtml']);
+                                    var newLine = $("#commentItem").tmpl(messageData).hide();
                                     newLine.prependTo("#commentList_" + msgTopicId);
                                     $("#commentList_" + msgTopicId).listview("refresh");
                                     newLine.slideDown();
@@ -122,7 +129,10 @@
     });
     //]]>       
     </script>
-        <div class="mb10"><liquidtpl:subTitle/></div>
+        <div class="mb10">
+          <liquidtpl:topicTitle/>
+          <liquidtpl:topicContent/>
+        </div>
         <liquidtpl:commentFormContainer/>&nbsp;
         <liquidtpl:commentList/>
         <script id="commentItem" type="text/x-jquery-tmpl">

@@ -4,6 +4,11 @@
         $(function(){
             $.topicForm = {};
             $.initForm("topicForm", "/topic/json", null, function(jsonData){
+              $("#topicForm #contentField").keydown(function (e) {
+                    if (e.metaKey && e.keyCode == 13) {
+                        $("#topicForm").submit();
+                    }
+              });
               $.setFormValues("topicForm", jsonData, $.mobile.showPageLoadingMsg, null, $.mobile.hidePageLoadingMsg);
             });
         });
@@ -19,6 +24,11 @@
             <div id="titleError" class="warningMessageOne" style="display:none;" />
             <label for="titleField" class="bold"><liquidtpl:text key="topic.title"/></label>
             <input id="titleField" name="title"/>
+        </div>
+        <div class="ma5">
+            <div id="contentError" class="warningMessageOne" style="display:none;" />
+            <label for="contentField" class="bold"><liquidtpl:text key="topic.content"/></label>
+            <textarea cols="40" rows="8" id="contentField" name="content"></textarea>
         </div>
         <input name="content" type="hidden" value="" />
         <input type="submit" value="登録" />

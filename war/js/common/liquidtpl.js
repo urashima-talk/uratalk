@@ -18,10 +18,7 @@ $.evalJsonCommentFiltered = function(value) {
 		if (startIndex == -1 || endIndex == -1) {
 			throw new Error("JSON was not comment filtered");
 		}
-		var data = value.substring(startIndex + 2, endIndex)
-		        .replace(/[\r]/g, "")
-		        .replace(/\r\n/g, "\n")
-				.replace(/[\r\n]/g, "\\n").replace(/[\t]/g, "\\t");
+		var data = value.substring(startIndex + 2, endIndex);
 		return data;
 	};
 	return $.secureEvalJSON(uncommentJsonString(value));
@@ -57,6 +54,15 @@ $.escapeHTML = function(value) {
 	};
 
 	return String(value).replace(/[<>&"']/g, replaceChars);
+};
+
+$.unescapeHTML = function(value) {
+	return value.replace(/&lt;/g, '<')
+	            .replace(/&gt;/g, '>')
+	            .replace(/&amp;/g, '&')
+	            .replace(/&#039;/g, '\'')
+	            .replace(/&#034;/g,'\"')
+	            .replace(/&quot;/g, '\"');
 };
 
 $.simpleHTML = function(value) {

@@ -48,6 +48,7 @@ object TopicService {
           (JsString("name"), tojson(if (topic.getName == null || topic.getName.size == 0) LanguageUtil.get("topic.defaultName") else topic.getName)),
           (JsString("title"), tojson(topic.getTitle)),
           (JsString("content"), tojson(topic.getContent)),
+          (JsString("contentHtml"), tojson(Text(BasicHelper.textToHtml(topic.getContent).toString).toString)),
           (JsString("isNoticed"), tojson(topic.isNoticed.toString)),
           (JsString("isHidden"), tojson(topic.isHidden.toString)),
           (JsString("number"), tojson(topic.getNumberString)),
@@ -75,6 +76,7 @@ object TopicService {
           (JsString("name"), tojson(if (comment.getName == null || comment.getName.size == 0) LanguageUtil.get("topic.defaultName") else comment.getName)),
           (JsString("title"), tojson(comment.getTitle)),
           (JsString("content"), tojson(comment.getContent)),
+          (JsString("contentHtml"), tojson(Text(BasicHelper.textToHtml(comment.getContent).toString).toString)),
           (JsString("isNoticed"), tojson(comment.isNoticed.toString)),
           (JsString("isHidden"), tojson(comment.isHidden.toString)),
           (JsString("number"), tojson(comment.getNumberString)),
@@ -412,7 +414,7 @@ object TopicService {
           KeyFactory.keyToString(comment.getKey),
           comment.getNumberString,
           comment.getName,
-          TextUtils.textToHtml(comment.getContent),
+          BasicHelper.textToHtml(comment.getContent),
           AppConstants.dateTimeFormat.format(comment.getCreatedAt))
       } catch {
         case e =>
@@ -421,7 +423,7 @@ object TopicService {
             "${id}",
             "${number}",
             "${name}",
-            Text("{{html content}}"),
+            Text("{{html contentHtml}}"),
             "${createdAt}")
       }
     <li>

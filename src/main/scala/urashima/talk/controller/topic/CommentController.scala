@@ -10,6 +10,7 @@ import urashima.talk.lib.util.{ AppConstants, TextUtils }
 import urashima.talk.model.{ Comment, Topic }
 import urashima.talk.service.{ CommentChannelService, TopicService }
 import javax.servlet.http.HttpServletRequest
+import org.dotme.liquidtpl.helper.BasicHelper
 
 class CommentController extends AbstractFormController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
@@ -105,7 +106,8 @@ class CommentController extends AbstractFormController {
       "commentFormContainer" -> { e => <div id={ "commentFormContainer_%s".format(topicId) } style={"display:%s;".format(if(isItem) "none" else "block")}></div> },
       "commentItemTemplate" -> { e => TopicService.getCommentItemTemplate(null) }, "menuAdd" ->
       { e => <a class={ "center menuAdd_%s".format(topicId) } href="#"><img id="menuAddIcon" src="/img/icon/comment.png" alt={ "%s %s".format(LanguageUtil.get("topic.comment"), LanguageUtil.get("add")) } height="16" style="margin:0px;"/></a> },
-      "subTitle" -> { e => <strong id={ "subTitle_%s".format(topicId) }></strong> },
+      "topicTitle" -> { e => <strong id={ "topicTitle_%s".format(topicId) }></strong> },
+      "topicContent" -> { e => <div id={ "topicContent_%s".format(topicId) } class="topicContent mt5" style="display:none;"></div> },
       "topicJson" -> { e => TopicService.getTopicJson(topicId) })
   }
 }

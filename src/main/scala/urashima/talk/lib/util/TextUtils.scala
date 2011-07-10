@@ -6,7 +6,6 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.spec.SecretKeySpec
 import org.apache.commons.codec.binary.Base64
-import scala.xml.{ NodeSeq, XML, Text }
 
 object TextUtils {
 
@@ -54,20 +53,5 @@ object TextUtils {
       case e: Exception => e.printStackTrace
     }
     return Array[Byte]()
-  }
-
-  def textToHtml(text: String): NodeSeq = {
-    text.replaceAll("\r\n", "\n").split("\r|\n|\r\n").flatMap { line =>
-      <p>{ autoLink(line) }</p>
-    }.toSeq
-  }
-
-  def autoLink(text: String): NodeSeq = {
-    val URLPATTERN = "((http|https|ftp):\\/\\/[\\w?=&.\\/-;#~%-]+(?![\\w\\s?&.\\/;#~%\"=-]*>))".r
-    URLPATTERN.findFirstMatchIn(text) match {
-      case None => Text(text)
-      case Some(m) =>
-        <xml:group>{ Text(m.before.toString) }<a target="_blank" class="ui-link" href={ m.matched.toString }>{ m.matched.toString }</a>{ autoLink(m.after.toString) }</xml:group>
-    }
   }
 }
