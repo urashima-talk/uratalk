@@ -22,42 +22,47 @@
 <script src='/_ah/channel/jsapi'></script>
 </head>
 <body id="body">
-	<div data-role="page">
-		<div data-role="header">
-			<div id="mainMenu" data-role="navbar">
-				<ul id="mainMenuContainer">
-				  <li><a id="menuList" class="center" href="/index" data-direction="reverse"><img id="menuListIcon" src="/img/logo.png" alt="スレッド一覧" height="16" style="margin:0px;" /></a></li>
-				  <li><a id="menuFavorites" class="center" href="/favorites" data-transition="slide"><img id="menuFavoritesIcon" src="/img/icon/favorites.png" alt="お気に入り一覧" height="16" style="margin:0px;" /></a></li>
-				  <li><a id="menuSearch" class="center" href="/search" data-rel="dialog" data-transition="slidedown"><img id="menuAddIcon" src="/img/icon/search.png" alt="検索" height="16" style="margin:0px;" /></a></li>
-				  <li><liquidtpl:menuAdd/></li>
-				</ul>
-			</div>
-		</div>
-		<!-- /header -->
-		<div id="content" data-role="content">
+    <div data-role="page">
+        <div data-role="header">
+            <div id="mainMenu" data-role="navbar">
+                <ul id="mainMenuContainer">
+                  <li><a id="menuList" class="center" href="/" data-direction="reverse"><img id="menuListIcon" src="/img/logo.png" alt="スレッド一覧" height="16" style="margin:0px;" /></a></li>
+                  <li><a id="menuFavorites" class="center" href="/favorites" data-transition="slide"><img id="menuFavoritesIcon" src="/img/icon/favorites.png" alt="お気に入り一覧" height="16" style="margin:0px;" /></a></li>
+                  <li><a id="menuSearch" class="center" href="/search" data-rel="dialog" data-transition="slidedown"><img id="menuAddIcon" src="/img/icon/search.png" alt="検索" height="16" style="margin:0px;" /></a></li>
+                  <li><liquidtpl:menuAdd/></li>
+                </ul>
+            </div>
+        </div>
+        <!-- /header -->
+        <div id="content" data-role="content">
           <liquidtpl:content/>
-		</div>
-		<!-- /content -->
-		<div data-role="footer" data-position="inline">
-			<p class="small center">Copyright(C) www.uratwi.com</p>
-		</div>
-		<!-- /header -->
-	</div>
-	<!-- /page -->
-	<script type="text/javascript">
-	//<![CDATA[
-	$(function(){
-	    $(".reloadButton").live('click touchend', function(){
-	    	location.reload(); 
-	    	return false;
-	    });
-		$("#body").live('pageshow', function(){
-		    if (window.webkitNotifications && window.webkitNotifications.checkPermission() > 0) {
-		    	$(".notificationsRequestLink").show();
+        </div>
+        <!-- /content -->
+        <div data-role="footer" data-position="inline">
+            <p class="small center">Copyright(C) www.uratwi.com</p>
+        </div>
+        <!-- /header -->
+    </div>
+    <!-- /page -->
+    <script type="text/javascript">
+    //<![CDATA[
+    $(function(){
+        $(".reloadButton").live('click touchend', function(){
+            location.reload(); 
+            return false;
+        });
+        $("#body").live('pageshow', function(){
+            if($.mobile){
+                if(location.hash == ""){
+                  location.href = ('/#' + location.pathname + location.search);
+                }
+            }
+            if (window.webkitNotifications && window.webkitNotifications.checkPermission() > 0) {
+                $(".notificationsRequestLink").show();
             } 
-		});
-	});
-　　 //]]>
-	</script>
+        });
+    });
+    //]]>
+    </script>
 </body>
 </html>

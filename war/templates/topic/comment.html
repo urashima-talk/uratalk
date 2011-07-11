@@ -25,13 +25,6 @@
              }
         };
         
-        $.addReplyListener = function(commentNumber, topicId){
-            $('.reply_' + commentNumber + '-' + topicId).live('click touchend', function(){
-                $.replyForm(commentNumber, topicId);
-                return false;
-            });
-        }
-        
         $.replyForm = function(commentNumber, topicId){
             var text = $("#commentFormContainer_" + topicId + " #contentField").val();
             var headText = ">>" + commentNumber + " "; 
@@ -44,6 +37,39 @@
                 $.focusCommentForm(topicId);
             }
             
+        }
+        
+        $.nextCommentList = function(topicId, cursor){
+            $('.nextCommentButtonContainer_' + topicId).hide();
+            $.initList( "commentList", "commentItem", true, "/topic/commentjson", {"topicId": topicId, "curnext" : cursor}, function(jsonData){
+                var values = jsonData.values;
+                var size = values.length;
+                var newCursor = null;
+                if(size > 0){
+                    for(var i = 0 ; i < size; i++){
+                        var itemData = values[i];
+                        itemData['contentHtml'] = $.unescapeHTML(itemData['contentHtml']);
+                    }
+                    $("#commentItem").tmpl(values).appendTo("#commentList_" + topicId);
+                    $("#commentList_" + topicId).each(function(){
+                        try{
+                            $(this).listview('refresh');
+                        } catch (e) {
+                        }
+                    });
+                    
+                    if(jsonData.info && jsonData.info['curnext']){
+                        newCursor = jsonData.info['curnext'];
+                    }
+                    if(newCursor) {
+                        var newOnClick = '$.nextCommentList("' + topicId + '", "' + newCursor + '")';
+                        $('.nextCommentButton_' + topicId).attr('onclick', newOnClick).attr('ontouchend', newOnClick);
+                        $('.nextCommentButtonContainer_' + topicId).show();
+                    } else {
+                        $('.nextCommentButtonContainer_' + topicId).remove();
+                    }
+                }
+            }, function(){}, function(){});
         }
         
         $("#body").live('pageshow', function(){
@@ -129,29 +155,30 @@
     });
     //]]>       
     </script>
-        <div class="mb10">
-          <liquidtpl:topicTitle/>
-          <liquidtpl:topicContent/>
-        </div>
-        <liquidtpl:commentFormContainer/>&nbsp;
-        <liquidtpl:commentList/>
-        <script id="commentItem" type="text/x-jquery-tmpl">
-        <liquidtpl:commentItemTemplate/>
-        </script>
-        <div id="commentFormContainer" style="display:none;">
-            <hr/>
-            <form data-ajax="false" action="/topic/comment" id="commentForm" style="display: none;">
-                <input type="hidden" id="topicIdField" name="topicId" />
-                <div class="ma5">
-                    <div id="nameError" class="warningMessageOne" style="display: none;" />
-                    <label for="nameField" class="bold"><liquidtpl:text key="topic.name" /></label> 
-                    <input id="nameField" name="name" />
-                </div>
-                <div class="ma5">
-                    <div id="contentError" class="warningMessageOne" style="display: none;" />
-                    <label for="contentField" class="bold"><liquidtpl:text key="topic.comment" /></label>
-                    <textarea placeholder="コメントを入力してください" cols="40" rows="8" id="contentField" name="content"></textarea>
-                </div>
-                <input type="submit" value="送信" />&nbsp;
-            </form>
-        </div>
+    <div class="mb10">
+      <liquidtpl:topicTitle/>
+      <liquidtpl:topicContent/>
+    </div>
+    <liquidtpl:commentFormContainer/>&nbsp;
+    <liquidtpl:commentList/>
+    <script id="commentItem" type="text/x-jquery-tmpl">
+    <liquidtpl:commentItemTemplate/>
+    </script>
+    <div id="commentFormContainer" style="display:none;">
+        <hr/>
+        <form data-ajax="false" action="/topic/comment" id="commentForm" style="display: none;">
+            <input type="hidden" id="topicIdField" name="topicId" />
+            <div class="ma5">
+                <div id="nameError" class="warningMessageOne" style="display: none;" />
+                <label for="nameField" class="bold"><liquidtpl:text key="topic.name" /></label> 
+                <input id="nameField" name="name" />
+            </div>
+            <div class="ma5">
+                <div id="contentError" class="warningMessageOne" style="display: none;" />
+                <label for="contentField" class="bold"><liquidtpl:text key="topic.comment" /></label>
+                <textarea placeholder="コメントを入力してください" cols="40" rows="8" id="contentField" name="content"></textarea>
+            </div>
+            <input type="submit" value="送信" />&nbsp;
+        </form>
+    </div>&nbsp;
+    <liquidtpl:nextCommentButton/>

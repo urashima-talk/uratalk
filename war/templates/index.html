@@ -1,18 +1,35 @@
 <script type="text/javascript">
     //<![CDATA[
-    $(function(){    	
-    	$.reloadList = function(){
-    		if($("#topicList > li").size() == 0){
-                $.initList( "topicList", "topicItem", true, "/topic/json", null, function(jsonData){
-                    var values = jsonData.values;
-                    var size = values.length;
-                    $.setListValues("topicList", "topicItem", true, jsonData);
-                    if(size > 0){
-                        $("#topicList").listview();
+    $(function(){
+        $.loadedTopic = [];
+        $.nextTopicList = function(cursor){
+        	$('.nextTopicButtonContainer').hide();
+            $.initList( "topicList", "topicItem", true, "/topic/json", {"curnext" : cursor}, function(jsonData){
+                var values = jsonData.values;
+                var size = values.length;
+                var newCursor = null;
+                if(size > 0){
+                    $("#topicItem").tmpl(values).appendTo(".topicList");
+                    $(".topicList").each(function(){
+                        try{
+                            $(this).listview('refresh');
+                        } catch (e) {
+                        }
+                    });
+                    
+                    if(jsonData.info && jsonData.info['curnext']){
+                        newCursor = jsonData.info['curnext'];
                     }
-                });    		
-    		}
-    	};
+                    if(newCursor) {
+                        var newOnClick = '$.nextTopicList("' + newCursor + '")';
+                        $('.nextTopicButton').attr('onclick', newOnClick).attr('ontouchend', newOnClick);
+                        $('.nextTopicButtonContainer').show();
+                    } else {
+                        $('.nextTopicButtonContainer').remove();
+                    }
+                }
+            }, function(){}, function(){});
+        }
     });
     //]]>
 </script>
@@ -22,3 +39,4 @@
 <script id="topicItem" type="text/x-jquery-tmpl">
 <liquidtpl:topicItemTemplate/>
 </script>
+<liquidtpl:nextTopicButton/>
