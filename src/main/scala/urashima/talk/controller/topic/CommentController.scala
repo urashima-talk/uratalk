@@ -11,8 +11,9 @@ import urashima.talk.model.{ Comment, Topic }
 import urashima.talk.service.{ CommentChannelService, TopicService }
 import javax.servlet.http.HttpServletRequest
 import org.dotme.liquidtpl.helper.BasicHelper
+import urashima.talk.controller.TitleListController
 
-class CommentController extends AbstractFormController {
+class CommentController extends AbstractFormController with TitleListController {
   override val logger = Logger.getLogger(classOf[FormController].getName)
 
   override def redirectUri: String = {
@@ -90,7 +91,21 @@ class CommentController extends AbstractFormController {
 
   override def replacerMap: Map[String, ((Node) => NodeSeq)] = {
     val topicId = request.getParameter(AppConstants.KEY_TOPIC_ID)
-    val list = TopicService.fetchCommentList(topicId)
+    val cursorNext: Option[String] = request.getParameter(Constants.KEY_CURSOR_NEXT) match {
+      case null => None
+      case v: String => Some(v)
+      case _ => None
+    }
+    val resultSet = TopicService.getCommentResultList(topicId, cursorNext)
+    val list = resultSet.toArray.toList.map { obj =>
+      obj.asInstanceOf[Comment]
+    }
+
+    val topicTitleString: String = TopicService.fetchOne(topicId) match {
+      case Some(topic) => "%s | %s".format(topic.getTitle, LanguageUtil.get("title"))
+      case None => LanguageUtil.get("title")
+    }
+
     val isItem: Boolean = (list != null) && (list.size > 0)
     super.replacerMap + ("commentList" -> { e =>
       if (isItem) {
@@ -100,14 +115,26 @@ class CommentController extends AbstractFormController {
           }
         }</ul>
       } else {
-        Text("")
+        <ul id={ "commentList_%s".format(topicId) } class="commentList" data-role="listview"><li style="display:none;">%nbsp;</li></ul>
       }
     },
-      "commentFormContainer" -> { e => <div id={ "commentFormContainer_%s".format(topicId) } style={"display:%s;".format(if(isItem) "none" else "block")}></div> },
+      "commentFormContainer" -> { e => <div id={ "commentFormContainer_%s".format(topicId) } style={ "display:%s;".format(if (isItem) "none" else "block") }></div> },
       "commentItemTemplate" -> { e => TopicService.getCommentItemTemplate(null) }, "menuAdd" ->
       { e => <a class={ "center menuAdd_%s".format(topicId) } href="#"><img id="menuAddIcon" src="/img/icon/comment.png" alt={ "%s %s".format(LanguageUtil.get("topic.comment"), LanguageUtil.get("add")) } height="16" style="margin:0px;"/></a> },
+      "title" -> { e => Text(topicTitleString) },
       "topicTitle" -> { e => <strong id={ "topicTitle_%s".format(topicId) }></strong> },
       "topicContent" -> { e => <div id={ "topicContent_%s".format(topicId) } class="topicContent mt5" style="display:none;"></div> },
-      "topicJson" -> { e => TopicService.getTopicJson(topicId) })
+      "topicJson" -> { e => TopicService.getTopicJson(topicId) },
+      "nextCommentButton" -> { e =>
+        if (resultSet.hasNext) {
+          val newCursor = resultSet.getEncodedCursor
+          val onclick = "$.nextCommentList('%s', '%s')".format(topicId, newCursor);
+          <div class={ "nextCommentButtonContainer_%s".format(topicId) }>
+            <button class={ "nextCommentButton_%s".format(topicId) } onclick={ onclick } ontouchend={ onclick }>{ LanguageUtil.get("nextCursor") }</button>
+          </div>
+        } else {
+          Text("")
+        }
+      })
   }
 }

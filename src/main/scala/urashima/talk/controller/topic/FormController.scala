@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletResponse
 import com.google.appengine.api.datastore.KeyFactory
 import java.io.File
 import scala.xml._
+import urashima.talk.controller.TitleListController
 
-class FormController extends AbstractFormController {
+class FormController extends AbstractFormController with TitleListController {
   var newId = ""
 
   override val logger = Logger.getLogger(classOf[FormController].getName)

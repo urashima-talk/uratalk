@@ -10,6 +10,8 @@ import org.slim3.controller.Controller
 import org.slim3.controller.Navigation
 import scala.collection.JavaConversions._
 import urashima.talk.service.CommentChannelService
+import urashima.talk.meta.TopicMeta
+import org.slim3.datastore.Datastore
 
 class CleanupcounterController extends Controller {
 
@@ -19,7 +21,9 @@ class CleanupcounterController extends Controller {
     ReverseCounterLogService.cleanupDatastore("c")
     CounterLogService.cleanupDatastore("t_all")
     //Todo paginate
-    TopicService.fetchAll.foreach { topic =>
+     val m: TopicMeta = TopicMeta.get
+    //cursor.map
+    Datastore.query(m).sort(m.lastCommentAt.desc).asList.foreach { topic =>
       CommentChannelService.cleanupDatastore(topic.getNumberString)
     }
     null

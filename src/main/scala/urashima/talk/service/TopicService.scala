@@ -27,6 +27,8 @@ import org.slim3.memcache.Memcache
 import java.util.logging.Level
 import scala.xml.{ NodeSeq, Text }
 import org.dotme.liquidtpl.helper.BasicHelper
+import org.slim3.datastore.S3QueryResultList
+import org.slim3.datastore.ModelQuery
 
 object TopicService {
   val logger = Logger.getLogger(TopicService.getClass.getName)
@@ -103,19 +105,26 @@ object TopicService {
     }
   }
 
-  def fetchAll(): List[Topic] = {
+  def getResultList(_cursor: Option[String]): S3QueryResultList[Topic] = {
     val m: TopicMeta = TopicMeta.get
-    try {
-      val cacheList = Memcache.get(MC_KEY_TOPIC_LIST).asInstanceOf[List[Topic]]
-      if (cacheList == null) {
-        throw new NullPointerException
+    //cursor.map
+    val query: ModelQuery[Topic] = Datastore.query(m).sort(m.lastCommentAt.desc)
+      .limit(AppConstants.RESULTS_PER_PAGE);
+    _cursor match {
+      case Some(cursor) =>
+        query.encodedStartCursor(cursor).asQueryResultList()
+      case None => try {
+        val cacheList = Memcache.get(MC_KEY_TOPIC_LIST).asInstanceOf[S3QueryResultList[Topic]]
+        if (cacheList == null) {
+          throw new NullPointerException
+        }
+        cacheList
+      } catch {
+        case e =>
+          val list = query.asQueryResultList()
+          Memcache.put(MC_KEY_TOPIC_LIST, list)
+          list
       }
-      cacheList
-    } catch {
-      case e =>
-        val list = Datastore.query(m).sort(m.lastCommentAt.desc).asList.toList
-        Memcache.put(MC_KEY_TOPIC_LIST, list)
-        list
     }
   }
 
@@ -201,22 +210,29 @@ object TopicService {
   /**
    * Comment
    */
-  def fetchCommentList(topicId: String): List[Comment] = {
+  def getCommentResultList(topicId: String, _cursor: Option[String]): S3QueryResultList[Comment] = {
     val m: CommentMeta = CommentMeta.get
     try {
       fetchOne(topicId) match {
         case Some(topic) => {
-          try {
-            val cacheList = Memcache.get(MC_KEY_COMMENT_LIST + topic.getNumberString).asInstanceOf[List[Comment]]
-            if (cacheList == null) {
-              throw new NullPointerException
+          //cursor.map
+          val query: ModelQuery[Comment] = Datastore.query(m).filter(m.topicRef.equal(topic.getKey))
+            .limit(AppConstants.RESULTS_PER_PAGE);
+          _cursor match {
+            case Some(cursor) =>
+              query.encodedStartCursor(cursor).asQueryResultList()
+            case None => try {
+              val cacheList = Memcache.get(MC_KEY_COMMENT_LIST + topic.getNumberString).asInstanceOf[S3QueryResultList[Comment]]
+              if (cacheList == null) {
+                throw new NullPointerException
+              }
+              cacheList
+            } catch {
+              case e =>
+                val list = query.asQueryResultList()
+                Memcache.put(MC_KEY_COMMENT_LIST + topic.getNumberString, list)
+                list
             }
-            cacheList
-          } catch {
-            case e =>
-              val list = Datastore.query(m).filter(m.topicRef.equal(topic.getKey)).asList.toList
-              Memcache.put(MC_KEY_COMMENT_LIST + topic.getNumberString, list)
-              list
           }
         }
         case None => null
@@ -267,7 +283,7 @@ object TopicService {
     QueueFactory.getDefaultQueue.add(Builder.withUrl("/task/topic/refreshdate")
       .param(AppConstants.KEY_TOPIC_ID, KeyFactory.keyToString(topic.getKey))
       .method(Method.POST))
-      
+
     // delete list cache
     try {
       Memcache.delete(MC_KEY_COMMENT_LIST + topic.getNumberString)
@@ -357,8 +373,7 @@ object TopicService {
   /*
    * NodeHelper
    */
-  
-  
+
   def getTopicItemTemplate(topic: Topic): NodeSeq = {
     val (topicId: String,
       title: String,
@@ -385,7 +400,7 @@ object TopicService {
       </a>
     </li>
   }
-  
+
   def getTopicJson(topicId: String): NodeSeq =
     {
       import sjson.json.JsonSerialization._
@@ -394,7 +409,7 @@ object TopicService {
         val topic: Topic = TopicService.fetchOne(topicId) match {
           case Some(v) => v
           case None => TopicService.createNew
-        } 
+        }
         BasicHelper.JsonTag("topic", tojson(topic))
       } catch {
         case e => Text("")
@@ -418,24 +433,23 @@ object TopicService {
           AppConstants.dateTimeFormat.format(comment.getCreatedAt))
       } catch {
         case e =>
-          ( 
-            "${topicId}",
+          ("${topicId}",
             "${id}",
             "${number}",
             "${name}",
             Text("{{html contentHtml}}"),
             "${createdAt}")
       }
+    val onclick = "$.replyForm('%s', '%s');return false;".format(number, topicId)
     <li>
       <strong>{ number }.&nbsp;&nbsp;{ name }&nbsp;さん</strong>
       <span class="alignright small">
-        <a class={"reply_%s-%s".format(number, topicId)}><img class="mr10" style="vertical-align: bottom;" height="16px" src="/img/icon/reply.png" onload={"$.addReplyListener('%s', '%s');".format(number, topicId)}/></a>{ createdAt }
+        <a class={ "reply_%s-%s".format(number, topicId) } onclick={ onclick } ontouchend={ onclick }><img class="mr10" style="vertical-align: bottom;" height="16px" src="/img/icon/reply.png"/></a>{ createdAt }
       </span>
       <div class="mt5">
         { contentHtml }
       </div>
     </li>
   }
-
 
 }

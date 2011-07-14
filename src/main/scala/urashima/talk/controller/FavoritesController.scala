@@ -8,7 +8,7 @@ import urashima.talk.service.TopicService
 import org.dotme.liquidtpl.LanguageUtil
 import urashima.talk.controller.topic.BaseTopicListController
 
-class FavoritesController extends AbstractActionController with BaseTopicListController {
+class FavoritesController extends AbstractActionController with BaseTopicListController with TitleListController {
   override def getTemplateName: String = {
     "favorites"
   }

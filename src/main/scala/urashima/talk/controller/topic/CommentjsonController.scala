@@ -18,9 +18,22 @@ class CommentjsonController extends AbstractJsonDataController {
     import urashima.talk.service.TopicService.CommentProtocol._
     val startDate: Date = new Date
     val topicId = request.getParameter(AppConstants.KEY_TOPIC_ID)
+
+    val cursorNext: Option[String] = request.getParameter(Constants.KEY_CURSOR_NEXT) match {
+      case null => None
+      case v: String => Some(v)
+      case _ => None
+    }
     TopicService.fetchOne(topicId) match {
       case Some(topic) => {
-        tojson(TopicService.fetchCommentList(request.getParameter(AppConstants.KEY_TOPIC_ID)))
+        val resultSet = TopicService.getCommentResultList(topicId, cursorNext)
+        if (resultSet.hasNext) {
+          putExtraInformation(Constants.KEY_CURSOR_NEXT, resultSet.getEncodedCursor)
+        }
+        val list = resultSet.toArray.toList.map { obj =>
+          obj.asInstanceOf[Comment]
+        }
+        tojson(list)
       }
       case None =>
         addError(Constants.KEY_GLOBAL_ERROR, LanguageUtil.get("error.dataNotFound"))

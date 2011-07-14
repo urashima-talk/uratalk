@@ -18,10 +18,22 @@ class JsonController extends AbstractJsonDataController {
     import sjson.json.JsonSerialization._
     import urashima.talk.service.TopicService.TopicProtocol._
     
+    val cursorNext: Option[String] = request.getParameter(Constants.KEY_CURSOR_NEXT) match {
+      case null => None
+      case v: String => Some(v)
+      case _ => None
+    }
     if (request.getParameter(AppConstants.MODE_FAVORITES) == "true") {
       tojson(TopicService.fetchAllFavorites(request))
     } else {
-      tojson(TopicService.fetchAll())
+      val resultSet = TopicService.getResultList(cursorNext)
+      if(resultSet.hasNext){
+          putExtraInformation(Constants.KEY_CURSOR_NEXT, resultSet.getEncodedCursor)
+      }
+      val list = resultSet.toArray.toList.map { obj =>
+        obj.asInstanceOf[Topic]
+      }
+      tojson(list)
     }
   }
 

@@ -23,6 +23,11 @@
              } else if (elm.setSelectionRange) {
                 elm.setSelectionRange(elm.value.length, elm.value.length);
              }
+            $('#body .wrapper').each( function(){
+                if(this.iscroll){
+                    this.iscroll.scrollTo($("#commentFormContainer_" + topic.id).get(0), 0);
+                }
+            });
         };
         
         $.replyForm = function(commentNumber, topicId){

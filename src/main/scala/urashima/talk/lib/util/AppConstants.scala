@@ -8,6 +8,7 @@ object AppConstants {
   val CONFIG_FILE = "app"
   val SYSTEM_TIME_ZONE: TimeZone = TimeZone.getTimeZone("GMT-8:00")
   val COMMON_KEY: String = "VC5GPCvuRR1YMWod";
+  val RESULTS_PER_PAGE: Int = 10;
 
   // settings for validate
   val VALIDATE_STRING_LENGTH = 100

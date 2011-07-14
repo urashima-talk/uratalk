@@ -12,7 +12,7 @@ import com.google.appengine.api.datastore.KeyFactory
 import java.io.File
 import scala.xml._
 
-class SearchController extends AbstractActionController {
+class SearchController extends AbstractActionController with TitleListController {
 
   override val logger = Logger.getLogger(classOf[SearchController].getName)
 
