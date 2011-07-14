@@ -14,7 +14,6 @@
         };
         
         $.focusCommentForm = function(topicId){
-            $.scrollTo("#commentFormContainer_" + topicId, 200, {offset: {top:-10}});
             var elm = $("#commentFormContainer_" + topicId + " #contentField").get(0);
             if (elm.createTextRange) {
                 var range = elm.createTextRange();
@@ -26,6 +25,8 @@
             $('#body .wrapper').each( function(){
                 if(this.iscroll){
                     this.iscroll.scrollTo($("#commentFormContainer_" + topic.id).get(0), 0);
+                } else {
+                    $(this).scrollTo("#commentFormContainer_" + topicId, 200, {offset: {top:-10}});
                 }
             });
         };

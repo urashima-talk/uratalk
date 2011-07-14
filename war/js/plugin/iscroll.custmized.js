@@ -2,9 +2,8 @@
  * iScroll v4.1.7 ~ Copyright (c) 2011 Matteo Spinelli, http://cubiq.org
  * Released under MIT license, http://cubiq.org/license
  * 
- * Customized by urashima
  */
-
+//customized
 (function() {
 	var m = Math, vendor = (/webkit/i).test(navigator.appVersion) ? 'webkit'
 			: (/firefox/i).test(navigator.userAgent) ? 'Moz'

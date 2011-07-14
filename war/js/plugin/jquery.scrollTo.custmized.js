@@ -53,6 +53,8 @@
  * @desc Scroll on both axes, to different values
  * @example $('div').scrollTo( { top: 300, left:'+=200' }, { axis:'xy', offset:-20 } );
  */
+// custmized
+
 ;(function( $ ){
 	
 	var $scrollTo = $.scrollTo = function( target, duration, settings ){
@@ -158,9 +160,12 @@
 				}else{ 
 					var val = targ[pos];
 					// Handle percentage values
-					attr[key] = val.slice && val.slice(-1) == '%' ? 
-						parseFloat(val) / 100 * max
-						: val;
+					/* customize */
+					if(val){
+						attr[key] = val.slice && val.slice(-1) == '%' ? 
+								parseFloat(val) / 100 * max
+								: val;
+					}
 				}
 
 				// Number or 'number'
