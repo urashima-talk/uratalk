@@ -64,7 +64,7 @@
                     if(!$.iscrolls[location.hash]){
                         $('#body .wrapper').each( function(){
                             if(!this.iscroll){
-                                if((/android iphone|ipad/gi).test(navigator.appVersion)) {
+                                if((/android|iphone|ipad/gi).test(navigator.appVersion)) {
                                     this.iscroll = new iScroll(this, { checkDOMChanges: true, zoom:false, pullToRefresh: 'down', onPullDown: function(){location.reload();},
                                                                pullDownLabel : [ '画面を引き下げて...',
                                                                                  '指をはなして更新...', '読み込み中...' ],

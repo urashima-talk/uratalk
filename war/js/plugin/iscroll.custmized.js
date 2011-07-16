@@ -436,7 +436,7 @@
 				c1 = m.abs(e.touches[0].pageX - e.touches[1].pageX);
 				c2 = m.abs(e.touches[0].pageY - e.touches[1].pageY);
 				that.touchesDistStart = m.sqrt(c1 * c1 + c2 * c2);
-
+				// Customize
 				that.originX = m.abs(e.touches[0].pageX + e.touches[1].pageX
 						- that.wrapperOffsetLeft * 2)
 						/ 2 - that.x;
@@ -545,7 +545,7 @@
 						|| that.maxScrollY >= 0 ? 0 : that.maxScrollY;
 				// Pull down to refresh
 				if (that.options.pullToRefresh && that.contentReady) {
-					if (that.pullDownToRefresh && newY > that.offsetBottom) {
+					if (that.pullDownToRefresh && newY > that.offsetBottom * 2) {
 						that.pullDownEl.className = 'iScrollPullDown flip';
 						that.pullDownLabel.innerText = that.options.pullDownLabel[1];
 					} else if (that.pullDownToRefresh
@@ -555,7 +555,7 @@
 					}
 
 					if (that.pullUpToRefresh
-							&& newY < that.maxScrollY - that.offsetTop) {
+							&& newY < that.maxScrollY - that.offsetTop * 2) {
 						that.pullUpEl.className = 'iScrollPullUp flip';
 						that.pullUpLabel.innerText = that.options.pullUpLabel[1];
 					} else if (that.pullUpToRefresh

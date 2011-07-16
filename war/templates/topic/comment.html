@@ -184,7 +184,7 @@
                 <label for="contentField" class="bold"><liquidtpl:text key="topic.comment" /></label>
                 <textarea placeholder="コメントを入力してください" cols="40" rows="8" id="contentField" name="content"></textarea>
             </div>
-            <input type="submit" value="送信" />&nbsp;
+            <input type="submit" value="送信" ontouchend="$(this.form).submit();return false;"/>&nbsp;
         </form>
     </div>&nbsp;
     <liquidtpl:nextCommentButton/>
