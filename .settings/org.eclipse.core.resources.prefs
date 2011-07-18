@@ -1,6 +1,7 @@
-#Sun Jun 26 14:35:25 JST 2011
+#Sun Jul 10 21:57:59 JST 2011
 eclipse.preferences.version=1
 encoding//war/templates/index.html=UTF-8
+encoding//war/templates/search.html=UTF8
 encoding//war/templates/topic/comment.html=UTF-8
 encoding//war/templates/topic/form.html=UTF-8
 encoding/<project>=UTF8
