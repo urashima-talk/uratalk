@@ -113,6 +113,8 @@
                 });
                 $.setFormValues(commentFormId, jsonData, $.mobile.showPageLoadingMsg, null, $.mobile.hidePageLoadingMsg);
             });
+            $.loaded[topic.id] = true;
+          }
         });
     });
     //]]>       
