@@ -113,50 +113,6 @@
                 });
                 $.setFormValues(commentFormId, jsonData, $.mobile.showPageLoadingMsg, null, $.mobile.hidePageLoadingMsg);
             });
-            
-            //channelapi
-            $.connected = false;
-            if($.socket == null){
-                $.socket = [];
-            }
-            if(!$.socket[topic.id]){
-                $.ajax({
-                    type : "POST",
-                    url : "/topic/commentchannel",
-                    cache : false,
-                    dataType : "text",
-                    data : {"topicId": topic.id},
-                    success : function(result) {
-                        var jsonData = $.evalJsonCommentFiltered(result);
-                        if( jsonData['channelToken'] ){
-                            channel = new goog.appengine.Channel(jsonData['channelToken']);
-                            $.socket[topic.id] = channel.open();
-                            $.socket[topic.id].onopen = function(){$.connected = true;};
-                            $.socket[topic.id].onmessage = function(message){
-                                var messageData = $.evalJsonCommentFiltered(message.data);
-                                var msgTopicId = messageData['topicId'];
-                                if(msgTopicId == topic.id){
-                                    $.showNotification("/favicon.png", messageData['name'], messageData['content']);
-                                    messageData['contentHtml'] = $.unescapeHTML(messageData['contentHtml']);
-                                    var newLine = $("#commentItem").tmpl(messageData).hide();
-                                    newLine.prependTo("#commentList_" + msgTopicId);
-                                    $("#commentList_" + msgTopicId).listview("refresh");
-                                    newLine.slideDown();
-                                }
-                                
-                            };
-                            $.socket[topic.id].onerror = function(error){
-                                //console.dir(error)
-                            };
-                            $.socket[topic.id].onclose = function(){$.connected = false;};
-                        }
-                    }, 
-                    error : function(){
-                    }
-                });
-            }
-            $.loaded[topic.id] = true;
-          }
         });
     });
     //]]>       

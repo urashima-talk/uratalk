@@ -8,7 +8,7 @@ import scala.collection.mutable.MapBuilder
 import scala.xml._
 import urashima.talk.lib.util.{ AppConstants, TextUtils }
 import urashima.talk.model.{ Comment, Topic }
-import urashima.talk.service.{ CommentChannelService, TopicService }
+import urashima.talk.service.TopicService
 import javax.servlet.http.HttpServletRequest
 import org.dotme.liquidtpl.helper.BasicHelper
 import urashima.talk.controller.TitleListController
@@ -71,14 +71,6 @@ class CommentController extends AbstractFormController with TitleListController 
 
             TopicService.saveComment(comment, topic)
             response.asInstanceOf[HttpServletResponse].addCookie(TopicService.createCookieUserName(comment.getName))
-
-            try {
-              import sjson.json.JsonSerialization._
-              import urashima.talk.service.TopicService.CommentProtocol._
-              val channelId = CommentChannelService.getChannelId(request, topic.getNumberString);
-              CommentChannelService.sendUpdateToUsers(topic.getNumberString, tojson(comment), channelId)
-            } finally {
-            }
           }
         }
         case None => null

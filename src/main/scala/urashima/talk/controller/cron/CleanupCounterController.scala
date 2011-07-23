@@ -1,17 +1,8 @@
 package urashima.talk.controller.cron
 
-import com.google.appengine.api.datastore.DatastoreServiceFactory
-import com.google.appengine.api.datastore.FetchOptions
-import com.google.appengine.api.datastore.Query
-import org.dotme.liquidtpl.lib.memcache.ReverseCounterLogService
-import org.dotme.liquidtpl.lib.memcache.CounterLogService
-import urashima.talk.service.TopicService
-import org.slim3.controller.Controller
-import org.slim3.controller.Navigation
+import org.dotme.liquidtpl.lib.memcache.{CounterLogService, ReverseCounterLogService}
+import org.slim3.controller.{Controller, Navigation}
 import scala.collection.JavaConversions._
-import urashima.talk.service.CommentChannelService
-import urashima.talk.meta.TopicMeta
-import org.slim3.datastore.Datastore
 
 class CleanupcounterController extends Controller {
 
@@ -20,12 +11,6 @@ class CleanupcounterController extends Controller {
     ReverseCounterLogService.cleanupDatastore("t")
     ReverseCounterLogService.cleanupDatastore("c")
     CounterLogService.cleanupDatastore("t_all")
-    //Todo paginate
-     val m: TopicMeta = TopicMeta.get
-    //cursor.map
-    Datastore.query(m).sort(m.lastCommentAt.desc).asList.foreach { topic =>
-      CommentChannelService.cleanupDatastore(topic.getNumberString)
-    }
     null
   }
 }
