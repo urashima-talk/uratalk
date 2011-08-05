@@ -24,12 +24,14 @@ $.evalJsonCommentFiltered = function(value) {
     return $.secureEvalJSON(uncommentJsonString(value));
 };
 
-$.getUrlParams = function() {
-    var url = location.href;
+$.getUrlParams = function(url) {
+    if (!url) {
+        url = location.href;
+    }
     var result = {};
     url = url.replace(/.*\?(.*?)/, "$1");
     var keyValueList = url.split("&");
-    for ( var i = 0; i < keyValueList.length; i++) {
+    for (var i = 0; i < keyValueList.length; i++) {
         var keyValue = keyValueList[i].split("=");
         result[keyValue[0]] = keyValue[1];
     }
@@ -39,16 +41,16 @@ $.getUrlParams = function() {
 $.escapeHTML = function(value) {
     replaceChars = function(ch) {
         switch (ch) {
-        case "<":
-            return "&lt;";
-        case ">":
-            return "&gt;";
-        case "&":
-            return "&amp;";
-        case "'":
-            return "&#39;";
-        case '"':
-            return "&quot;";
+            case "<":
+                return "&lt;";
+            case ">":
+                return "&gt;";
+            case "&":
+                return "&amp;";
+            case "'":
+                return "&#39;";
+            case '"':
+                return "&quot;";
         }
         return "?";
     };
@@ -58,11 +60,11 @@ $.escapeHTML = function(value) {
 
 $.unescapeHTML = function(value) {
     return value.replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-                .replace(/&amp;/g, '&')
-                .replace(/&#039;/g, '\'')
-                .replace(/&#034;/g,'\"')
-                .replace(/&quot;/g, '\"');
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&#039;/g, '\'')
+        .replace(/&#034;/g, '\"')
+        .replace(/&quot;/g, '\"');
 };
 
 $.simpleHTML = function(value) {
@@ -70,7 +72,7 @@ $.simpleHTML = function(value) {
     var re = /((http|https|ftp):\/\/[\w?=&.\/-;#~%-]+(?![\w\s?&.\/;#~%"=-]*>))/g;
     var lines = $.escapeHTML(value).replace(re, '<a target="_blank" href="$1">$1<\/a>').split(/\r|\n|\r\n/);
     var size = lines.length;
-    for ( var i = 0; i < size; i++) {
+    for (var i = 0; i < size; i++) {
         html += "<p>"
         html += lines[i];
         html += "<\/p>"
@@ -89,7 +91,7 @@ $.wrapLongText = function(str, step) {
     var count = size / step;
     var j = 0;
     var res = "";
-    for ( var i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
         res += escapeHTML(str.substring(j, j + step));
         res += "<wbr/>";
         j += step;
@@ -107,7 +109,7 @@ $.wrapLongText = function(str, step) {
 $.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, onEmpty, onError) {
     var postParams = $.getUrlParams();
     postParams["mode"] = "list";
-    for ( var i in params) {
+    for (var i in params) {
         postParams[i] = params[i];
     }
     $.ajax({
@@ -121,8 +123,8 @@ $.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, on
             var values = jsonData.values;
             if (values && values["redirect"]) {
                 $("#" + listId).empty();
-                if($.mobile && $.mobile.changePage){
-                    $.mobile.changePage( values["redirect"], { transition: "slideup"} ); 
+                if ($.mobile && $.mobile.changePage) {
+                    $.mobile.changePage(values["redirect"], { transition: "slideup"});
                 } else {
                     location.href = values["redirect"];
                 }
@@ -144,7 +146,7 @@ $.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, on
                         error = jsonData["errors"]["grobal"];
                     }
                     var errorHtml = $("<div>").addClass("mt10").addClass(
-                            "warningMessage").text(error);
+                        "warningMessage").text(error);
                     $("#" + listId).replaceWith(errorHtml);
                 }
             }
@@ -156,7 +158,7 @@ $.initList = function(listId, itemTplId, showEmptyMsg, url, params, callback, on
             } else {
                 var error = "Request Error: " + errorThrown + ". " + url;
                 errorHtml = $("<div>").addClass("mt10").addClass("warningMessage")
-                        .text(error);
+                    .text(error);
                 $("#" + listId).replaceWith(errorHtml);
                 $("#" + listId).show();
             }
@@ -175,10 +177,10 @@ $.setListValues = function(listId, itemTplId, showEmptyMsg, jsonData) {
         $.listColor("#" + listId);
     } else if (showEmptyMsg) {
         var errorHtml = $("<div>").addClass("mt10").addClass("confirmMessage")
-                .text(jsonData["empty"]);
+            .text(jsonData["empty"]);
         $("#" + listId).replaceWith(errorHtml);
     } else {
-        if(onEmpty){
+        if (onEmpty) {
             onEmpty()
         } else {
             $("#" + listId).remove();
@@ -192,7 +194,7 @@ $.setListValues = function(listId, itemTplId, showEmptyMsg, jsonData) {
 $.initForm = function(formId, url, params, callback) {
     var postParams = $.getUrlParams();
     postParams["mode"] = "form";
-    for ( var i in params) {
+    for (var i in params) {
         postParams[i] = params[i];
     }
     $.ajax({
@@ -206,8 +208,8 @@ $.initForm = function(formId, url, params, callback) {
             var values = jsonData.values;
             if (values && values["redirect"]) {
                 $("#" + formId).empty();
-                if($.mobile && $.mobile.changePage){
-                    $.mobile.changePage( values["redirect"], { transition: "slideup"} ); 
+                if ($.mobile && $.mobile.changePage) {
+                    $.mobile.changePage(values["redirect"], { transition: "slideup"});
                 } else {
                     location.href = values["redirect"];
                 }
@@ -225,7 +227,7 @@ $.initForm = function(formId, url, params, callback) {
                     error = jsonData["errors"]["grobal"];
                 }
                 var errorHtml = $("<div>").addClass("warningMessage").text(
-                        error);
+                    error);
                 $("#" + formId).replaceWith(errorHtml);
             }
             $("#" + formId).show();
@@ -246,14 +248,14 @@ $.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess, afterSu
     var targetValues = {};
     for (key in sourceValues) {
         var type = $("#" + formId).find("input[name='" + key + "']").attr(
-                "type");
+            "type");
         if ((type != 'checkbox') && (type != 'radio')) {
             keys[key] = key;
         }
     }
     $("#" + formId).link(targetValues, keys);
 
-    for ( var key in sourceValues) {
+    for (var key in sourceValues) {
         $(targetValues).setField(key, sourceValues[key]);
     }
 
@@ -267,7 +269,7 @@ $.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess, afterSu
         }
         var value = sourceValues[key];
         if ($.isArray(value)) {
-            for ( var i in value) {
+            for (var i in value) {
                 if ($(this).val() == value[i].toString()) {
                     $(this).attr("checked", "checked");
                 }
@@ -292,7 +294,7 @@ $.setFormValues = function(formId, jsonData, beforeSubmit, afterSuccess, afterSu
         }
         var value = sourceValues[key];
         if ($.isArray(value)) {
-            for ( var i in value) {
+            for (var i in value) {
                 if ($(this).val() == value[i].toString()) {
                     $(this).attr("checked", "checked");
                 }
@@ -328,64 +330,64 @@ $.submit = function(formId, afterSuccess, afterSubmit) {
     $("#" + formId).find("input[type='submit']").attr('disabled', 'disabled');
 
     $.ajax({
-                type : "POST",
-                url : $("#" + formId).attr('action'),
-                cache : false,
-                dataType : "text",
-                data : $("#" + formId).serialize(),
-                success : function(result) {
-                    try {
-                        var jsonData = $.evalJsonCommentFiltered(result)
-                        if (jsonData["result"] == "success") {
-                            if (afterSuccess) {
-                                afterSuccess();
-                            }
-                            if (jsonData["redirect"]) {
-                                if(jsonData["redirect"] == "reload"){
-                                    location.reload();
-                                } else {
-                                    if($.mobile && $.mobile.changePage){
-                                        $.mobile.changePage( jsonData["redirect"], { transition: "slideup"} ); 
-                                    } else {
-                                        location.href = jsonData["redirect"];
-                                    }  
-                                }
-                            }
+        type : "POST",
+        url : $("#" + formId).attr('action'),
+        cache : false,
+        dataType : "text",
+        data : $("#" + formId).serialize(),
+        success : function(result) {
+            try {
+                var jsonData = $.evalJsonCommentFiltered(result)
+                if (jsonData["result"] == "success") {
+                    if (afterSuccess) {
+                        afterSuccess();
+                    }
+                    if (jsonData["redirect"]) {
+                        if (jsonData["redirect"] == "reload") {
+                            location.reload();
                         } else {
-                            var error = "Unknown Error";
-                            if (jsonData["errors"]) {
-                                for ( var key in jsonData["errors"]) {
-                                    $("#" + formId).find("#" + key + "Error")
-                                            .text(jsonData["errors"][key])
-                                            .slideDown("fast");
-                                }
+                            if ($.mobile && $.mobile.changePage) {
+                                $.mobile.changePage(jsonData["redirect"], { transition: "slideup"});
                             } else {
-                                $("#" + formId).find("#grobalError")
-                                        .text(error).slideDown("fast");
+                                location.href = jsonData["redirect"];
                             }
-
                         }
-                    } catch (e) {
-                        $("#" + formId).find("#grobalError").text(e.toString())
+                    }
+                } else {
+                    var error = "Unknown Error";
+                    if (jsonData["errors"]) {
+                        for (var key in jsonData["errors"]) {
+                            $("#" + formId).find("#" + key + "Error")
+                                .text(jsonData["errors"][key])
                                 .slideDown("fast");
+                        }
+                    } else {
+                        $("#" + formId).find("#grobalError")
+                            .text(error).slideDown("fast");
                     }
-                    $("#" + formId).find("input[type='submit']").removeAttr(
-                            'disabled');
-                    if (afterSubmit) {
-                        afterSubmit();
-                    }
-                },
-                error : function(XMLHttpRequest, textStatus, errorThrown) {
-                    var error = "Request Error: " + errorThrown + ". " + url;
-                    $("#" + formId).find("#grobalError").text(
-                            error + "\n" + result).slideDown("fast");
-                    $("#" + formId).find("input[type='submit']").removeAttr(
-                            'disabled');
-                    if (afterSubmit) {
-                        afterSubmit();
-                    }
+
                 }
-            });
+            } catch (e) {
+                $("#" + formId).find("#grobalError").text(e.toString())
+                    .slideDown("fast");
+            }
+            $("#" + formId).find("input[type='submit']").removeAttr(
+                'disabled');
+            if (afterSubmit) {
+                afterSubmit();
+            }
+        },
+        error : function(XMLHttpRequest, textStatus, errorThrown) {
+            var error = "Request Error: " + errorThrown + ". " + url;
+            $("#" + formId).find("#grobalError").text(
+                error + "\n" + result).slideDown("fast");
+            $("#" + formId).find("input[type='submit']").removeAttr(
+                'disabled');
+            if (afterSubmit) {
+                afterSubmit();
+            }
+        }
+    });
 }
 
 /**
@@ -394,7 +396,7 @@ $.submit = function(formId, afterSuccess, afterSubmit) {
 $.initDetail = function(detailId, itemTplId, url, params, callback) {
     var postParams = $.getUrlParams();
     postParams["mode"] = "detail";
-    for ( var i in params) {
+    for (var i in params) {
         postParams[i] = params[i];
     }
     $.ajax({
@@ -408,8 +410,8 @@ $.initDetail = function(detailId, itemTplId, url, params, callback) {
             var values = jsonData.values;
             if (values && values["redirect"]) {
                 $("#" + detailId).empty();
-                if($.mobile && $.mobile.changePage){
-                    $.mobile.changePage( values["redirect"], { transition: "slideup"} ); 
+                if ($.mobile && $.mobile.changePage) {
+                    $.mobile.changePage(values["redirect"], { transition: "slideup"});
                 } else {
                     location.href = values["redirect"];
                 }
@@ -428,7 +430,7 @@ $.initDetail = function(detailId, itemTplId, url, params, callback) {
                     error = jsonData["errors"]["grobal"];
                 }
                 var errorHtml = $("<div>").addClass("mt10").addClass(
-                        "warningMessage").text(error);
+                    "warningMessage").text(error);
                 $("#" + detailId).replaceWith(errorHtml);
             }
             $("#" + detailId).show();
@@ -436,7 +438,7 @@ $.initDetail = function(detailId, itemTplId, url, params, callback) {
         error : function(XMLHttpRequest, textStatus, errorThrown) {
             var error = "Request Error: " + errorThrown + ". " + url;
             errorHtml = $("<div>").addClass("mt10").addClass("warningMessage")
-                    .text(error);
+                .text(error);
             $("#" + detailId).replaceWith(errorHtml);
             $("#" + detailId).show();
         }
